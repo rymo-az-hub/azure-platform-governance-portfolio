@@ -1,0 +1,31 @@
+# Private notes
+private/
+*_private.md
+interview_notes_private.md
+
+# Azure / local settings
+.azure/
+*.env
+.env
+*.local
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# Evidence raw exports
+evidence_raw/
+
+# PowerShell local output
+*.clixml
+
+# CSV outputs generated from real environments
+*_real.csv
+*_prod.csv
