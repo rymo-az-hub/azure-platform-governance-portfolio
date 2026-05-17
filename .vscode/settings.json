@@ -1,0 +1,10 @@
+{
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.renderWhitespace": "boundary",
+  "editor.rulers": [120],
+  "markdown.validate.enabled": true,
+  "powershell.powerShellDefaultVersion": "PowerShell (x64)"
+}
