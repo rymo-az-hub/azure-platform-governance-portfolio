@@ -1,69 +1,55 @@
 # Azure Platform Governance Portfolio
 
-This repository provides a practical design and implementation example for a lightweight Azure platform governance baseline.
+このリポジトリは、中堅規模の組織を想定した **Azure Governance / Policy Baseline** の設計・実装例です。
 
-The main theme is **Azure Governance / Policy Baseline** for a mid-sized organization using Azure. The secondary theme is **AVD operations standardization**, positioned as an applied CloudOps example based on common operational scenarios.
+Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cost、例外運用、Evidenceをどう管理するかを整理します。AVD運用標準化は、CloudOpsの考え方を実運用へ落としたサブテーマとして扱います。
 
-## Purpose
+## 想定シナリオ
 
-This repository is intended to show how Azure platform operations can be standardized through design documents, Infrastructure as Code, runbooks, ADRs, and evidence.
+Azure利用を広げる前に、Subscription単位で最低限の統制を整えるケースを想定しています。
 
-The focus is not only on creating Azure resources. It also explains why specific controls are required, how they should be operated, and how operation results should be recorded.
+初期版では、Enterprise Scale Landing Zone全体を再現するのではなく、低コストで検証しやすい範囲に絞ります。
 
-## Target Scenario
+## 主テーマ: Azure Governance / Policy Baseline
 
-The assumed scenario is a mid-sized organization that has started using Azure and wants to introduce minimum platform governance before Azure usage expands further.
-
-The initial scope is intentionally lightweight. It focuses on a single Subscription-level baseline rather than a full Enterprise Scale Landing Zone.
-
-## Main Theme: Azure Governance / Policy Baseline
-
-The main design area covers the following topics.
-
-| Area | Document |
+| 領域 | ドキュメント |
 |---|---|
-| Requirements | `docs/01_main_azure_governance_baseline/requirements.md` |
-| Governance design | `docs/01_main_azure_governance_baseline/governance_design.md` |
-| Policy baseline | `docs/01_main_azure_governance_baseline/policy_baseline.md` |
-| RBAC design | `docs/01_main_azure_governance_baseline/rbac_design.md` |
-| Tagging standard | `docs/01_main_azure_governance_baseline/tagging_standard.md` |
-| Monitoring and logging | `docs/01_main_azure_governance_baseline/monitoring_logging_design.md` |
-| Cost notes | `docs/01_main_azure_governance_baseline/cost_management_notes.md` |
-| Exception operation | `docs/01_main_azure_governance_baseline/exception_operation.md` |
-| Validation plan | `docs/01_main_azure_governance_baseline/validation_plan.md` |
+| 要件・前提 | `docs/01_main_azure_governance_baseline/requirements.md` |
+| ガバナンス設計 | `docs/01_main_azure_governance_baseline/governance_design.md` |
+| Policy設計 | `docs/01_main_azure_governance_baseline/policy_baseline.md` |
+| RBAC設計 | `docs/01_main_azure_governance_baseline/rbac_design.md` |
+| Tag標準 | `docs/01_main_azure_governance_baseline/tagging_standard.md` |
+| 監視・ログ | `docs/01_main_azure_governance_baseline/monitoring_logging_design.md` |
+| コスト管理 | `docs/01_main_azure_governance_baseline/cost_management_notes.md` |
+| 例外運用 | `docs/01_main_azure_governance_baseline/exception_operation.md` |
+| 検証計画 | `docs/01_main_azure_governance_baseline/validation_plan.md` |
 
-## Secondary Theme: AVD Operations Standardization
+## サブテーマ: AVD運用標準化
 
-The AVD section provides examples of operational standardization.
+AVD運用標準化は、Azure基盤運用の実務適用例として配置しています。
 
-This section is not the main scope of the repository. It is positioned as an applied CloudOps example that connects governance, operation design, automation, evidence, and customer-facing communication.
-
-| Area | Document |
+| 領域 | ドキュメント |
 |---|---|
-| AVD operations design | `docs/02_sub_avd_operations_standardization/avd_ops_design.md` |
-| Inventory and pre-check | `docs/02_sub_avd_operations_standardization/inventory_and_precheck.md` |
-| SessionHost lifecycle | `docs/02_sub_avd_operations_standardization/sessionhost_lifecycle.md` |
-| Personal Desktop assignment | `docs/02_sub_avd_operations_standardization/personal_desktop_assignment.md` |
-| Troubleshooting flow | `docs/02_sub_avd_operations_standardization/troubleshooting_flow.md` |
-| Operation checklist | `docs/02_sub_avd_operations_standardization/operation_checklist.md` |
-| Customer response template | `docs/02_sub_avd_operations_standardization/customer_response_template.md` |
+| 全体設計 | `docs/02_sub_avd_operations_standardization/avd_ops_design.md` |
+| 棚卸し・事前確認 | `docs/02_sub_avd_operations_standardization/inventory_and_precheck.md` |
+| SessionHostライフサイクル | `docs/02_sub_avd_operations_standardization/sessionhost_lifecycle.md` |
+| Personal Desktop割当 | `docs/02_sub_avd_operations_standardization/personal_desktop_assignment.md` |
+| 接続不可時の切り分け | `docs/02_sub_avd_operations_standardization/troubleshooting_flow.md` |
+| 作業チェックリスト | `docs/02_sub_avd_operations_standardization/operation_checklist.md` |
+| 顧客回答テンプレート | `docs/02_sub_avd_operations_standardization/customer_response_template.md` |
 
-## Implementation
+## 実装
 
-Infrastructure as Code is written in Bicep.
-
-Azure operations are executed mainly through Azure CLI. Windows + PowerShell 7 is used as the local execution environment for runbooks and helper scripts.
-
-| Area | Path |
+| 領域 | パス |
 |---|---|
-| Bicep entry point | `infra/main.bicep` |
-| Bicep parameters | `infra/parameters/` |
-| Bicep modules | `infra/modules/` |
-| Azure CLI runbooks | `scripts/cli/` |
-| AVD operation scripts | `scripts/avd/` |
-| Local quality check | `scripts/local/Test-RepositoryQuality.ps1` |
+| Bicepエントリポイント | `infra/main.bicep` |
+| Bicepパラメータ | `infra/parameters/` |
+| Bicepモジュール | `infra/modules/` |
+| Azure CLI Runbook | `scripts/cli/` |
+| AVD運用スクリプト | `scripts/avd/` |
+| ローカル品質チェック | `scripts/local/Test-RepositoryQuality.ps1` |
 
-## Repository Structure
+## 構成
 
 ```text
 .
@@ -77,113 +63,62 @@ Azure operations are executed mainly through Azure CLI. Windows + PowerShell 7 i
 │  ├─ main.bicep
 │  ├─ modules/
 │  └─ parameters/
-├─ scripts/
-│  ├─ cli/
-│  ├─ avd/
-│  └─ local/
-├─ .vscode/
-├─ .gitignore
-└─ .gitattributes
+└─ scripts/
+   ├─ cli/
+   ├─ avd/
+   └─ local/
 ```
 
-## Reading Guide
+## 推奨確認順
 
-Recommended reading order:
-
-1. `docs/00_overview/architecture_overview.md`
-2. `docs/00_overview/design_principles.md`
+1. `docs/00_overview/portfolio_scope.md`
+2. `docs/00_overview/architecture_overview.md`
 3. `docs/01_main_azure_governance_baseline/requirements.md`
 4. `docs/01_main_azure_governance_baseline/governance_design.md`
 5. `docs/01_main_azure_governance_baseline/policy_baseline.md`
 6. `infra/main.bicep`
 7. `scripts/cli/README.md`
 8. `docs/04_evidence/06-validation-summary.md`
-9. `docs/03_adr/adr-001-landing-zone-lite-scope.md`
+9. `docs/03_adr/README.md`
 10. `docs/02_sub_avd_operations_standardization/avd_ops_design.md`
 
-## Validation Flow
-
-The basic validation flow is as follows.
+## 検証の流れ
 
 ```text
-Review requirements and design
+設計確認
   ↓
-Run Bicep build
+Bicep build
   ↓
-Run What-If
+What-If
   ↓
-Deploy baseline
+Deploy
   ↓
-Validate Policy / RBAC / Tag / Log settings
+Policy / RBAC / Tag / Log の確認
   ↓
-Record Evidence
+Evidence記録
   ↓
-Teardown validation resources when no longer needed
+不要リソース削除
 ```
 
-## Local Quality Check
+## ローカル品質チェック
 
-Run the local repository quality check before using the repository as a reviewable artifact.
+PowerShell 7で以下を実行します。
 
 ```powershell
 .\scripts\local\Test-RepositoryQuality.ps1
 ```
 
-The script checks:
+確認対象は、主要ファイルの存在、Bicep build、PowerShell構文、生成物の残存有無です。
 
-- Git working tree status
-- Required file existence
-- Bicep build
-- PowerShell syntax for runbooks and helper scripts
-- Generated file cleanup
+## EvidenceとADR
 
-Expected result:
+- Evidence: `docs/04_evidence/`
+- ADR: `docs/03_adr/`
 
-```text
-Repository quality check completed successfully.
-```
+実Tenant ID、Subscription ID、Principal ID、UPN、顧客固有値は公開しません。必要な場合はサンプル値またはマスク値に置き換えます。
 
-## Evidence
+## 現在の状態
 
-Evidence templates are stored under `docs/04_evidence/`.
+初期公開版として、設計資料、Bicep骨組み、Runbook、Evidenceテンプレート、ADR、AVD運用標準化資料、公開用スクリプト骨組みを配置済みです。
 
-They are used to record:
-
-- What-If result
-- Deployment result
-- Policy assignment result
-- RBAC validation result
-- Diagnostic Settings result
-- Validation summary
-
-Environment-specific identifiers such as tenant IDs, subscription IDs, principal IDs, UPNs, and customer-specific values should be masked before publishing evidence.
-
-## Design Decisions
-
-Architecture Decision Records are stored under `docs/03_adr/`.
-
-Current ADRs cover:
-
-- Landing Zone Lite scope
-- Governance / Policy Baseline as the main theme
-- RBAC model
-- Monitoring and Diagnostic Settings
-- AVD operations standardization
-
-## Current Status
-
-The initial portfolio structure is available.
-
-Included:
-
-- Overview documents
-- Azure Governance Baseline design documents
-- Initial Bicep skeleton
-- Azure CLI runbooks
-- Evidence templates
-- ADRs
-- AVD operation standardization documents
-- AVD script samples and public script skeletons
-- Local repository quality check
-
-Next improvements will focus on script refinement, validation evidence, and README-level navigation cleanup.
+次の段階では、実Azure環境でWhat-If、Deploy、Validate、Teardownを実行し、Evidenceへ結果を反映します。
