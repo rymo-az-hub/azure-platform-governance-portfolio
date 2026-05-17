@@ -61,6 +61,7 @@ Azure operations are executed mainly through Azure CLI. Windows + PowerShell 7 i
 | Bicep modules | `infra/modules/` |
 | Azure CLI runbooks | `scripts/cli/` |
 | AVD operation scripts | `scripts/avd/` |
+| Local quality check | `scripts/local/Test-RepositoryQuality.ps1` |
 
 ## Repository Structure
 
@@ -78,7 +79,8 @@ Azure operations are executed mainly through Azure CLI. Windows + PowerShell 7 i
 │  └─ parameters/
 ├─ scripts/
 │  ├─ cli/
-│  └─ avd/
+│  ├─ avd/
+│  └─ local/
 ├─ .vscode/
 ├─ .gitignore
 └─ .gitattributes
@@ -117,6 +119,28 @@ Validate Policy / RBAC / Tag / Log settings
 Record Evidence
   ↓
 Teardown validation resources when no longer needed
+```
+
+## Local Quality Check
+
+Run the local repository quality check before using the repository as a reviewable artifact.
+
+```powershell
+.\scripts\local\Test-RepositoryQuality.ps1
+```
+
+The script checks:
+
+- Git working tree status
+- Required file existence
+- Bicep build
+- PowerShell syntax for runbooks and helper scripts
+- Generated file cleanup
+
+Expected result:
+
+```text
+Repository quality check completed successfully.
 ```
 
 ## Evidence
@@ -160,5 +184,6 @@ Included:
 - ADRs
 - AVD operation standardization documents
 - AVD script samples and public script skeletons
+- Local repository quality check
 
 Next improvements will focus on script refinement, validation evidence, and README-level navigation cleanup.
