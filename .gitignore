@@ -29,3 +29,5 @@ evidence_raw/
 # CSV outputs generated from real environments
 *_real.csv
 *_prod.csv
+# Bicep build outputs
+infra/**/*.json
