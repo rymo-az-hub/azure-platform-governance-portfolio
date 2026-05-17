@@ -2,57 +2,40 @@
 
 ## 1. 目的
 
-この文書では、Azure Policy Assignmentの確認結果を記録します。
-
-Policyが想定スコープへ割り当てられているか、初期効果が想定どおりかを確認します。
+Azure Policy Assignmentの確認結果を記録します。
 
 ## 2. 実行情報
 
 | 項目 | 内容 |
 |---|---|
-| 実行日 | YYYY-MM-DD |
-| 実行者 | `<operator>` |
+| 実行日 | 2026-05-17 |
+| 実行者 | `<poc-deployer-user>` |
 | 対象Subscription | `<subscription-name>` |
-| 対象Scope | `<scope>` |
-| Commit | `<commit-sha>` |
+| 対象Scope | `/subscriptions/<subscription-id>` |
+| Commit | `915181d` |
 
 ## 3. 確認コマンド
 
 ```powershell
-az policy assignment list --scope <scope> --output table
-az policy assignment show --name <assignment-name> --scope <scope>
+.\scripts\cli\Test-GovernanceBaseline.ps1 `
+  -Environment "sandbox" `
+  -ResourceNamePrefix "apg"
 ```
 
 ## 4. 確認結果
 
 | Policy | 期待する効果 | 結果 | 備考 |
 |---|---|---|---|
-| Require tag: Environment | Audit | 未確認 |  |
-| Require tag: Owner | Audit | 未確認 |  |
-| Require tag: CostCenter | Audit | 未確認 |  |
-| Require tag: Workload | Audit | 未確認 |  |
-| Require tag: ManagedBy | Audit | 未確認 |  |
-| Allowed locations | Audit | 未確認 |  |
-| Audit Public IP resources | Audit | 未確認 |  |
+| Require tag: Environment | Audit | OK | `apg-sandbox-require-environment` |
+| Require tag: Owner | Audit | OK | `apg-sandbox-require-owner` |
+| Require tag: CostCenter | Audit | OK | `apg-sandbox-require-costcenter` |
+| Require tag: Workload | Audit | OK | `apg-sandbox-require-workload` |
+| Require tag: ManagedBy | Audit | OK | `apg-sandbox-require-managedby` |
+| Allowed locations | Audit | OK | `apg-sandbox-allowed-locations` |
+| Audit Public IP resources | Audit | OK | `apg-sandbox-audit-public-ip` |
 
-## 5. 出力抜粋
+## 5. 判断
 
-必要に応じて、Policy確認結果をマスクして貼り付けます。
+Policy Assignmentは想定どおりSubscriptionスコープに作成されました。
 
-```text
-<policy assignment output>
-```
-
-## 6. 判断
-
-| 項目 | 内容 |
-|---|---|
-| Policy Assignmentは想定どおりか | 未判断 |
-| 保留事項 |  |
-| 次の対応 |  |
-
-## 7. 注意点
-
-- 初期PoCではAudit中心で確認する
-- Denyへ変更する場合は、影響範囲と例外運用を確認する
-- Scopeが想定より広くなっていないか確認する
+初期PoCではすべてAuditであり、Denyは使用していません。
