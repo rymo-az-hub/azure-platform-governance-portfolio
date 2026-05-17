@@ -2,158 +2,119 @@
 
 ## 1. 目的
 
-この文書では、中堅規模の組織がAzureを利用する際に、最初に整えておきたいガバナンス設計を整理する。
+この文書では、Azure Governance Baselineの全体設計を整理します。
 
-ここでいうガバナンスは、単にPolicyを割り当てることではない。リソースの配置先、権限、タグ、ログ、コスト、例外運用、検証方法をあらかじめ決め、Azure利用が広がっても管理が破綻しにくい状態を作ることを指す。
+ここでいうガバナンスは、Policyを割り当てるだけの話ではありません。リソース配置、権限、Tag、Log、Cost、例外、Evidenceをあらかじめ整理し、Azure利用が広がっても管理しやすい状態を作ることを指します。
 
-本構成では、フルスケールのLanding Zoneではなく、Subscription単位で導入しやすいLightweightなGovernance Baselineを扱う。
+## 2. 設計範囲
 
-## 2. 想定シナリオ
+初期PoCでは、Subscriptionスコープを中心に以下を扱います。
 
-対象は、Azure利用をこれから広げていく中堅規模の組織とする。
+| 領域 | 内容 |
+|---|---|
+| スコープ設計 | Subscription / Resource Group / Resourceの役割を整理 |
+| Azure Policy | 標準からの逸脱を検出・制御 |
+| RBAC | 最小権限とスコープ分離 |
+| Tag | 所有者、環境、用途、コスト集計単位を明確化 |
+| Monitoring / Logging | Log Analytics WorkspaceとDiagnostic Settingsの標準化 |
+| Cost | TagとResource Groupを使った初期コスト管理 |
+| Exception | 例外理由、期限、承認者、見直し予定を記録 |
+| Evidence | What-If、Deploy、Validate結果を記録 |
 
-既に一部のリソースは利用しているが、以下のような課題が出始めている状態を想定する。
+Management Groupは初期PoCの必須要素にはしません。複数Subscriptionへ展開する段階で、Policy Assignmentや階層設計の適用先として扱います。
 
-- リソースの所有者が分かりにくい
-- タグの付与ルールが統一されていない
-- 権限付与の範囲が広くなりやすい
-- ログ出力先がリソースごとにばらついている
-- コストの集計単位が明確でない
-- Policy違反や例外の扱いが明文化されていない
-- 作業後の確認結果が残りにくい
+## 3. 非対象範囲
 
-この段階で最低限の標準を決めておくことで、後続のシステム追加や運用移管時の手戻りを減らす。
+初期PoCでは、以下は対象外です。
 
-## 3. 設計範囲
+| 対象外 | 理由 |
+|---|---|
+| 複数Management Groupを用いた全社階層 | 初期PoCとして範囲が広すぎるため |
+| 本格的なHub-Spokeネットワーク | 通信要件とセキュリティ要件が別途必要なため |
+| ExpressRoute / VPN設計 | 個別環境依存が大きいため |
+| Sentinel / SOC設計 | 監視運用設計まで範囲が広がるため |
+| IDライフサイクル詳細設計 | 人事・組織運用との連携が必要なため |
+| アプリケーション設計 | Azure基盤統制とは別領域のため |
+| 実際の承認ワークフロー | 組織固有の運用に依存するため |
 
-本設計の対象範囲は以下とする。
-
-- Subscription配下の基本統制
-- Resource Group構成
-- Azure Policyによる検出と制御
-- RBACによる権限管理
-- Tag標準
-- Diagnostic SettingsとLog Analytics
-- Cost管理に必要な情報整理
-- 例外運用
-- Evidenceの取得方針
-
-初期版では、Management Groupを前提にした大規模な階層設計は扱わない。ただし、将来的にManagement Groupへ展開できるよう、PolicyやRBACの考え方はスコープを意識して設計する。
-
-## 4. 非対象範囲
-
-以下は初期版では対象外とする。
-
-- 複数Management Groupを用いた全社階層設計
-- Hub-Spokeネットワークの詳細設計
-- ExpressRoute / VPNの接続設計
-- Microsoft Sentinelの詳細設計
-- IDライフサイクル管理の詳細設計
-- アプリケーション基盤の設計
-- 本番運用を前提とした完全な監視・通知設計
-- 組織固有の承認フローや変更管理システム連携
-
-これらは重要な設計領域ではあるが、初期段階で範囲を広げすぎると、Governance Baselineとしての主題がぼやけるため、別フェーズの拡張対象とする。
-
-## 5. 全体方針
-
-本設計では、以下の方針を採用する。
+## 4. 全体方針
 
 | 項目 | 方針 |
 |---|---|
-| 導入単位 | Subscription単位を基本とする |
+| 導入単位 | 初期PoCはSubscription単位 |
 | IaC | Bicepで再現可能にする |
-| 操作手段 | Azure CLIを基本とする |
-| Policy | 初期はAudit中心で影響を確認する |
-| RBAC | 最小権限、用途別グループ、スコープ分離を基本とする |
-| Tag | 所有者、環境、用途、コスト集計に必要な項目を標準化する |
-| Log | Diagnostic Settingsの出力先を標準化する |
-| Cost | タグとResource Group設計で集計しやすくする |
-| Exception | 例外理由、期限、承認者を残す |
-| Evidence | What-If、Deploy、Policy、RBAC、Log設定の結果を記録する |
+| 操作手段 | Azure CLIを基本にする |
+| Policy | Audit中心から始め、必要に応じてDenyへ移行 |
+| RBAC | 最小権限、グループ付与、スコープ分離 |
+| Tag | 作成時点で必須Tagを付与 |
+| Log | Log Analytics Workspaceを共通出力先として扱う |
+| Cost | Resource GroupとTagで追跡しやすくする |
+| Exception | 理由、期限、承認、見直しを記録 |
+| Evidence | 実行結果と確認結果を残す |
 
-## 6. スコープ設計
+## 5. スコープ設計
 
-### 6.1 Management Group
+### 5.1 Management Group
 
-初期版ではManagement Groupを必須とはしない。
+Management Groupは、初期PoCでは必須にしません。
 
-個人検証や小規模な導入では、Management Groupを前提にすると準備が重くなるため、まずはSubscriptionスコープで再現できる構成とする。
+ただし、現在は作成可能な前提に変わっているため、将来拡張の選択肢として明記します。複数Subscriptionへ同じ統制を展開する場合は、Management GroupスコープでのPolicy Assignmentや階層設計を検討します。
 
-ただし、将来的に複数Subscriptionへ展開する場合は、Management Group配下へPolicyやRBACを移すことを想定する。そのため、Policy定義や割り当ては、できるだけスコープ依存を強くしすぎない形で整理する。
+初期PoCで扱わない理由は、検証範囲が広がり、Bicep、Runbook、Evidenceの修正範囲も大きくなるためです。
 
-### 6.2 Subscription
+### 5.2 Subscription
 
-Subscriptionは、ガバナンス適用の基本単位とする。
+Subscriptionは、初期PoCの基本適用単位です。
 
-初期版では、1つのSubscription内に検証用Resource Groupを作成し、Policy、RBAC、Tag、Logの動作を確認する。
+Policy、RBAC、Cost、Activity Log確認など、Subscription単位で意味を持つ統制をここに集約します。
 
-Subscription全体に適用するものと、Resource Group単位で適用するものは分けて考える。
+### 5.3 Resource Group
 
-例として、以下のように整理する。
+Resource Groupは、用途とライフサイクルが近いリソースをまとめる単位です。
 
-| 適用範囲 | 対象例 |
-|---|---|
-| Subscription | Policy assignment、基本RBAC、コスト集計、Activity Log確認 |
-| Resource Group | Workload別リソース、運用担当権限、Diagnostic Settings確認 |
-| Resource | 個別リソースの診断設定、タグ、ロック |
-
-### 6.3 Resource Group
-
-Resource Groupは、用途とライフサイクルが近いリソースをまとめる単位とする。
-
-初期版では、以下のような構成を想定する。
+初期PoCでは、以下の構成を想定します。
 
 | Resource Group | 用途 |
 |---|---|
-| rg-platform-monitoring | Log Analyticsなど共通監視基盤 |
-| rg-platform-network | 最小ネットワーク構成 |
-| rg-platform-security | Key Vaultなどセキュリティ関連リソースを配置する場合の候補 |
-| rg-workload-sample | 検証用ワークロード |
+| `rg-apg-<env>-monitoring` | Log Analytics Workspaceなどの監視基盤 |
+| `rg-apg-<env>-network` | 最小ネットワーク構成 |
+| `rg-apg-<env>-workload-sample` | 検証用ワークロード |
 
-初期実装では、すべてを作り込まず、監視基盤と検証用リソースを中心に扱う。
+## 6. 主要設計
 
-## 7. Policy設計
+### 6.1 Policy
 
-Azure Policyは、環境全体のルール逸脱を検出・制御するために利用する。
+Azure Policyは、標準からの逸脱を検出・制御するために使います。
 
-初期版では、いきなりDenyで止めるのではなく、Auditを中心に適用する。既存運用や検証作業への影響を確認したうえで、Denyへ移行する対象を決める。
+初期PoCではAudit中心で開始します。既存運用や検証作業への影響を確認したうえで、必要なものだけDenyへ移行します。
 
-想定するPolicy領域は以下とする。
+主な対象は以下です。
 
-| 領域 | 初期方針 |
-|---|---|
-| 必須タグ | Auditから開始 |
-| 利用可能リージョン | AuditまたはDenyを検討 |
-| Public IP | 原則Audit。必要に応じてDeny |
-| Diagnostic Settings | AuditIfNotExistsを検討 |
-| Storage Accountの公開設定 | Deny候補 |
-| Key Vaultの保護設定 | AuditまたはDeny候補 |
+- 必須Tag
+- 利用可能リージョン
+- Public IP利用
+- Diagnostic Settings
+- Storage Account公開設定
+- Key Vault保護設定
 
-Policyは、ルールを強制するだけではなく、現状の逸脱を見える化する目的でも利用する。
+### 6.2 RBAC
 
-## 8. RBAC設計
+RBACは、最小権限とスコープ分離を基本にします。
 
-RBACは、最小権限とスコープ分離を基本とする。
-
-Subscription全体に広くOwnerやContributorを付与する運用は避ける。作業内容に応じて、Resource Group単位、または用途別グループ単位で権限を付与する。
-
-想定するロール設計は以下とする。
+Subscription全体へのOwnerやContributor付与は最小限にし、通常運用はResource Group単位、または用途別グループ単位で付与します。
 
 | 役割 | 想定スコープ | 主な用途 |
 |---|---|---|
 | Platform Owner | Subscription | ガバナンス設計、基盤管理 |
 | Platform Operator | Resource Group | 共通基盤の運用 |
-| Workload Owner | Workload Resource Group | 個別システムの管理 |
+| Workload Owner | Workload Resource Group | 個別ワークロード管理 |
 | Reader / Auditor | Subscription or Resource Group | 監査、確認、レビュー |
 
-初期版では、実ユーザーや実グループを使わず、サンプル名で設計を示す。
+### 6.3 Tag
 
-## 9. Tag設計
+Tagは、所有者確認、環境区分、コスト集計、運用問い合わせの起点として扱います。
 
-タグは、所有者確認、環境区分、コスト集計、運用問い合わせの起点として扱う。
-
-初期版では、以下のタグを標準とする。
+初期PoCの標準Tagは以下です。
 
 | Tag Key | 用途 | 例 |
 |---|---|---|
@@ -161,45 +122,25 @@ Subscription全体に広くOwnerやContributorを付与する運用は避ける�
 | Owner | 所有部門または担当 | platform-team |
 | CostCenter | コスト集計単位 | cc-0001 |
 | Workload | ワークロード名 | sample-app |
-| ManagedBy | 管理主体 | iac / manual |
+| ManagedBy | 管理方法 | iac / manual |
 
-タグは、後から整理するのではなく、リソース作成時点で付与する前提とする。
+### 6.4 Monitoring / Logging
 
-## 10. Log / Monitoring設計
+Log Analytics Workspaceを共通のログ出力先として扱います。
 
-ログは、障害対応や監査対応の前提になる。
+Diagnostic Settingsは、必要なリソースから段階的に設定・確認します。すべてのログを無条件に収集するとコストが増えるため、対象リソースとログカテゴリは検証しながら調整します。
 
-初期版では、Log Analytics Workspaceを共通のログ出力先として扱う。対象リソースにはDiagnostic Settingsを設定し、必要なログとメトリックを収集できる状態にする。
+### 6.5 Cost
 
-最初からすべてのログカテゴリを収集するとコストが増えるため、収集対象は検証しながら調整する。
+初期PoCでは、本格的なFinOps設計までは扱いません。
 
-設計上は、次の点を確認する。
+まずは、Resource GroupとTagにより、どのリソースが何の目的で作られたかを追える状態にします。また、検証後にTeardownできることもコスト管理の一部として扱います。
 
-- どのリソースからログを取得するか
-- どのLog Analytics Workspaceへ送るか
-- 保持期間はどうするか
-- コスト増加の可能性はあるか
-- 設定結果をどう確認するか
+### 6.6 Exception
 
-## 11. Cost管理
+標準を決めても、実運用では例外が発生します。
 
-Cost管理では、タグとResource Group設計を組み合わせて、利用状況を確認しやすくする。
-
-初期版では、複雑なFinOps設計までは行わない。まずは、コスト集計に必要なタグとResource Groupの単位を揃える。
-
-確認観点は以下とする。
-
-- CostCenterタグが付与されているか
-- Environmentごとに集計できるか
-- Workload単位で追えるか
-- 不要リソースを削除できるか
-- 検証後のTeardown手順があるか
-
-## 12. 例外運用
-
-PolicyやTag標準を定義しても、実運用では例外が発生する。
-
-例外を認める場合は、少なくとも以下を残す。
+例外を認める場合は、以下を記録します。
 
 - 例外対象
 - 例外理由
@@ -208,13 +149,13 @@ PolicyやTag標準を定義しても、実運用では例外が発生する。
 - 期限
 - 見直し予定
 
-例外を記録しない場合、標準が形骸化しやすい。例外は標準からの逸脱として扱い、恒久化しないようにする。
+期限や見直し予定がない例外は、標準の形骸化につながるため避けます。
 
-## 13. Evidence設計
+### 6.7 Evidence
 
-Evidenceは、作業結果と設計の整合性を確認するために残す。
+Evidenceは、設計と実装結果の整合性を確認するために残します。
 
-初期版では、以下をEvidenceとして記録する。
+初期PoCでは、以下を記録対象にします。
 
 | Evidence | 内容 |
 |---|---|
@@ -223,29 +164,23 @@ Evidenceは、作業結果と設計の整合性を確認するために残す。
 | Policy Assignment結果 | 割り当て済みPolicyの確認 |
 | RBAC確認結果 | ロール割り当ての確認 |
 | Diagnostic Settings結果 | ログ出力設定の確認 |
-| Validation Summary | 全体の確認結果 |
+| Validation Summary | 全体確認結果 |
 
-Evidenceには、実環境の機密情報を含めない。必要に応じてマスクした値やサンプル値に置き換える。
+## 7. 実装優先順位
 
-## 14. 初期実装の優先順位
-
-初期実装では、以下の順に作成する。
+初期PoCでは、以下の順に実装します。
 
 1. Resource Group構成
 2. Log Analytics Workspace
 3. Tag標準
 4. Policy Assignment
 5. RBAC Assignment
-6. Diagnostic Settings
-7. What-If / Deploy / Validate用Runbook
-8. Evidenceテンプレート
+6. Diagnostic Settings確認
+7. What-If / Deploy / Validate / Teardown Runbook
+8. Evidence反映
 
-AVD運用標準化は、Governance Baselineの後に、実運用への適用例として整備する。
+## 8. まとめ
 
-## 15. まとめ
+この設計では、Azure利用を広げる前に必要となる最低限の統制を整理します。
 
-本設計では、Azure利用を広げる前に必要となる最低限のガバナンスを整理する。
-
-重要なのは、個別リソースを作れることではなく、Azure環境を継続的に管理できる状態にすることである。
-
-そのために、Policy、RBAC、Tag、Log、Cost、例外運用、Evidenceを分けて考え、BicepとRunbookで再現できる形にする。
+重視するのは、個別リソースを作ることではなく、Policy、RBAC、Tag、Log、Cost、例外、Evidenceを運用可能な形でつなげることです。
