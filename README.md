@@ -23,6 +23,18 @@ Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cos
 
 PoCでは、Owner常用ではなく、検証用の実行アカウントに必要なロールを事前付与して実行しました。検証後は、作成したResource Group、Policy Assignment、Policy Definition、実行用アカウントを削除済みです。
 
+## 実装範囲
+
+このリポジトリでは、実装済みの範囲、設計・文書化に留めている範囲、今後拡張する範囲を分けています。
+
+| 区分 | 内容 |
+|---|---|
+| PoC実装済み | SubscriptionスコープBicep、Resource Group、Log Analytics Workspace、VNet、Custom Policy Definition、Policy Assignment、What-If、Deploy、Validate、Teardown |
+| 設計・文書化済み | RBAC設計、Tag標準、Cost管理方針、例外運用、AVD運用標準化、ADR、Evidence方針 |
+| 今後拡張 | Management Group展開、Policy Initiative、Policy Exemption、Diagnostic Settings本格実装、Budget、GitHub Actions |
+
+初期PoCでは、Azure Governance Baselineの流れを小さく検証することを優先しています。そのため、すべての領域を本番運用レベルまで実装しているわけではありません。
+
 ## 想定シナリオ
 
 Azure利用を広げる前に、Subscription単位で最低限の統制を整えるケースを想定しています。
@@ -46,6 +58,8 @@ Azure利用を広げる前に、Subscription単位で最低限の統制を整え
 ## サブテーマ: AVD運用標準化
 
 AVD運用標準化は、Azure基盤運用の実務適用例として配置しています。
+
+ここではAVD全体設計や本番手順そのものではなく、棚卸し、事前確認、DryRun、結果出力、切り分け、顧客回答の考え方を整理しています。
 
 | 領域 | ドキュメント |
 |---|---|
@@ -101,6 +115,16 @@ AVD運用標準化は、Azure基盤運用の実務適用例として配置して
 9. `docs/03_adr/README.md`
 10. `docs/02_sub_avd_operations_standardization/avd_ops_design.md`
 
+## 面接官向けの最短確認ルート
+
+短時間で確認する場合は、以下の順番を想定しています。
+
+1. `README.md` で全体像とPoC完了状態を確認
+2. `docs/01_main_azure_governance_baseline/governance_design.md` で設計方針を確認
+3. `infra/main.bicep` で実装範囲を確認
+4. `scripts/cli/README.md` で実行手順を確認
+5. `docs/04_evidence/06-validation-summary.md` で検証結果を確認
+
 ## 検証済みの流れ
 
 ```text
@@ -138,4 +162,4 @@ PowerShell 7で以下を実行します。
 - Evidence: `docs/04_evidence/`
 - ADR: `docs/03_adr/`
 
-実Tenant ID、Subscription ID、Principal ID、UPN、顧客固有値は公開しません。必要な場合はサンプル値またはマスク値に置き換えます。
+Evidenceは公開用にマスクした検証サマリです。実Tenant ID、Subscription ID、Principal ID、UPN、顧客固有値は公開しません。必要な場合はサンプル値またはマスク値に置き換えます。
