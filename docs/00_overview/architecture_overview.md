@@ -2,153 +2,88 @@
 
 ## 1. 目的
 
-この文書では、本構成の全体像を整理する。
+この文書では、リポジトリ全体の構成を整理します。
 
-対象は、中堅規模の組織がAzure利用を広げる前に整えておきたい、最低限のGovernance Baselineである。
-大規模なEnterprise Scale Landing Zoneをそのまま作るのではなく、まずはSubscription単位で導入しやすい構成に絞る。
+対象は、中堅規模の組織がAzure利用を広げる前に整えておきたい、軽量なAzure Governance Baselineです。初期版では、Management Groupを前提にした全社規模のLanding Zoneではなく、Subscription単位で検証しやすい範囲に絞ります。
 
-本構成で重視するのは、リソースを作ること自体ではない。
-Azure利用が広がった後でも、権限、タグ、ログ、コスト、Policy、例外運用、Evidenceを追える状態にすることを目的とする。
+## 2. 全体構成
 
-## 2. 全体像
-
-本構成は、以下の要素で構成する。
+本リポジトリは、以下の構成です。
 
 ~~~text
-Azure Governance Baseline
-├─ Scope Design
-│  ├─ Subscription
-│  └─ Resource Group
-│
-├─ Governance Controls
+Azure Platform Governance Portfolio
+├─ Azure Governance / Policy Baseline
+│  ├─ Scope Design
 │  ├─ Azure Policy
 │  ├─ RBAC
 │  ├─ Tagging Standard
-│  └─ Exception Operation
-│
-├─ Operations Baseline
-│  ├─ Log Analytics Workspace
-│  ├─ Diagnostic Settings
-│  ├─ Cost Management Notes
+│  ├─ Monitoring / Logging
+│  ├─ Cost Management
+│  ├─ Exception Operation
 │  └─ Evidence
 │
 ├─ Implementation
 │  ├─ Bicep
 │  └─ Azure CLI Runbook
 │
-└─ Applied Operations Example
-   └─ AVD Operations Standardization
+├─ Architecture Decision Records
+│  └─ ADR
+│
+└─ AVD Operations Standardization
+   ├─ Inventory / Pre-check
+   ├─ SessionHost Lifecycle
+   ├─ Personal Desktop Assignment
+   ├─ Troubleshooting Flow
+   └─ Operation Scripts
 ~~~
 
 ## 3. 論理構成
 
-初期版では、Subscription配下に共通基盤用と検証用のResource Groupを分けて配置する。
+初期版では、Subscription配下に用途別のResource Groupを配置します。
 
 ~~~text
 Subscription
-├─ rg-platform-monitoring
+├─ rg-apg-<env>-monitoring
 │  └─ Log Analytics Workspace
 │
-├─ rg-platform-network
+├─ rg-apg-<env>-network
 │  └─ Minimal network resources
 │
-└─ rg-workload-sample
+└─ rg-apg-<env>-workload-sample
    └─ Sample workload resources
 ~~~
 
-この構成では、まず共通的な監視・ログ出力先を用意し、その上でPolicy、RBAC、Tag標準を適用する。
+この構成で、監視・ログ出力先、Policy、RBAC、Tag標準を確認できる状態にします。
 
-## 4. スコープの考え方
+## 4. スコープ設計
 
-初期版では、Management Groupを必須にしない。
-
-理由は、個人検証環境や小規模な導入検討では、Management Groupを前提にすると準備が重くなるためである。
-まずはSubscription単位で再現できる構成にし、後からManagement Groupへ展開できるようにする。
+初期版の基本スコープはSubscriptionです。
 
 | スコープ | 初期版での扱い |
 |---|---|
 | Management Group | 将来拡張。初期版では必須にしない |
 | Subscription | Governance Baselineの基本適用単位 |
 | Resource Group | 用途別、ライフサイクル別の管理単位 |
-| Resource | Diagnostic SettingsやTag確認の対象 |
+| Resource | Tag、Diagnostic Settings、削除確認の対象 |
+
+Management Groupを最初から必須にしない理由は、個人検証環境や小規模な導入検討では準備が重くなるためです。まずはSubscription単位で再現できる構成にします。
 
 ## 5. 主要コンポーネント
 
-### 5.1 Azure Policy
-
-Azure Policyは、ルール違反を検出し、必要に応じて制御するために利用する。
-
-初期版ではAuditを中心にする。
-最初からDenyで止めると、既存運用や検証作業と衝突しやすいため、まずは現状を見える化する。
-
-主な対象は以下。
-
-- 必須タグ
-- 利用可能リージョン
-- Public IP利用
-- Diagnostic Settings
-- Storage Account公開設定
-- Key Vault保護設定
-
-### 5.2 RBAC
-
-RBACは、最小権限とスコープ分離を基本にする。
-
-Subscription全体に広くOwnerやContributorを付与しない。
-通常運用はResource Group単位で分け、必要に応じてReader、Contributor、Ownerの範囲を整理する。
-
-主な考え方は以下。
-
-- 個人ではなくグループ付与を基本にする
-- Subscription全体の強権限を絞る
-- 通常運用はResource Group単位にする
-- 一時権限は期限と理由を残す
-- 棚卸しを前提にする
-
-### 5.3 Tagging Standard
-
-タグは、所有者、環境、コスト、用途を追うために使う。
-
-初期版の必須タグは以下。
-
-| Tag Key | 用途 |
+| 領域 | 役割 |
 |---|---|
-| Environment | dev / test / prod / shared / sandbox |
-| Owner | 所有部門または担当チーム |
-| CostCenter | コスト集計単位 |
-| Workload | ワークロード名 |
-| ManagedBy | iac / manual などの管理方法 |
-
-タグは後から整理するのではなく、リソース作成時点で付与する。
-
-### 5.4 Log Analytics / Diagnostic Settings
-
-ログは、障害対応や監査対応の前提になる。
-
-初期版では、Log Analytics Workspaceを共通ログ出力先として用意する。
-対象リソースについては、Diagnostic Settingsの設定有無を確認し、必要なログをWorkspaceへ送る。
-
-ただし、すべてのログを無条件に集めるとコストが増える。
-まずは必要な範囲に絞り、運用に合わせて追加する。
-
-### 5.5 Cost Management
-
-初期版では、詳細なFinOps設計までは扱わない。
-
-まずは、Resource GroupとTagを組み合わせて、どのリソースが何の目的で作られたかを追える状態にする。
-検証環境では、不要リソースを削除できることもコスト管理の一部として扱う。
-
-### 5.6 Exception Operation
-
-標準を決めても、実運用では例外が発生する。
-
-例外を禁止するのではなく、理由、期限、承認者、見直し予定を残す。
-期限や解除条件がない例外は、実質的に標準の崩れになるため避ける。
+| Azure Policy | 必須Tag、利用リージョン、Public IPなどの逸脱を検出する |
+| RBAC | 作業者、スコープ、権限範囲を整理する |
+| Tagging Standard | 所有者、環境、コスト、用途を追えるようにする |
+| Log Analytics | ログ出力先を標準化する |
+| Diagnostic Settings | 必要なリソースログを取得できる状態にする |
+| Cost Management | TagとResource Groupを使い、コストの所在を追いやすくする |
+| Exception Operation | 標準から外れる場合の理由、期限、承認を記録する |
+| Evidence | 設計、実装、検証結果を後から確認できるようにする |
 
 ## 6. 実装構成
 
-IaCはBicepを中心にする。
-操作はAzure CLIを基本とする。
+IaCはBicepを中心にします。操作はAzure CLIを基本にし、ローカル実行環境はPowerShell 7を想定します。
 
 ~~~text
 infra/
@@ -165,83 +100,55 @@ infra/
    └─ network/
 ~~~
 
-初期実装では、すべてのモジュールを作り込みすぎない。
-まずは、Resource Group、Log Analytics Workspace、Policy Assignment、RBAC Assignment、Tagを中心にする。
+初期実装では、Resource Group、Log Analytics Workspace、Policy Assignment、RBAC Assignment、Tag、最小ネットワーク構成を中心にします。
 
-## 7. Runbook構成
+## 7. RunbookとEvidence
 
-Azure CLIのRunbookは、以下の流れで整理する。
+Runbookは、作成だけでなく、事前確認、What-If、Deploy、Validate、Teardownまで扱います。
 
-~~~text
-scripts/cli/
-├─ login.sh
-├─ set-subscription.sh
-├─ whatif.sh
-├─ deploy.sh
-├─ validate.sh
-└─ teardown.sh
-~~~
+Evidenceは、次の結果を記録するために用意します。
 
-Runbookでは、デプロイだけでなく、事前確認、検証、削除まで扱う。
+- What-If結果
+- Deployment結果
+- Policy Assignment確認
+- RBAC確認
+- Diagnostic Settings確認
+- Validation Summary
 
-特に、検証用構成ではTeardownが重要になる。
-作ったリソースを削除できない構成は、低コスト検証に向かない。
+実Tenant ID、Subscription ID、UPN、顧客固有値は記録しません。必要な場合はサンプル値またはマスク値に置き換えます。
 
-## 8. Evidence構成
+## 8. AVD運用標準化の位置づけ
 
-Evidenceは、設計、実装、確認結果をつなぐために残す。
+AVD運用標準化はサブテーマです。
 
-~~~text
-docs/04_evidence/
-├─ 01-what-if-result.md
-├─ 02-deployment-result.md
-├─ 03-policy-assignment-result.md
-├─ 04-rbac-validation-result.md
-├─ 05-diagnostic-settings-result.md
-└─ 06-validation-summary.md
-~~~
+主役はAzure Governance / Policy Baselineであり、AVD側は運用標準化の適用例として配置しています。
 
-Evidenceでは、実環境のTenant ID、Subscription ID、ユーザー名、顧客名、内部リソース名をそのまま残さない。
-必要に応じて、サンプル値やマスク値に置き換える。
-
-## 9. AVD運用標準化の位置づけ
-
-AVD運用標準化は、本構成のサブテーマとして扱う。
-
-主役はAzure Governance / Policy Baselineである。
-AVD側は、実運用で発生しやすい作業を、確認、実行、記録まで含めて標準化する適用例として置く。
-
-対象例。
+具体的には、以下を扱います。
 
 - HostPool棚卸し
-- SessionHost削除
-- Personal Desktopのユーザー割当
+- SessionHost削除・整理
+- Personal Desktop割当
 - 接続不可時の切り分け
-- 作業前後チェック
+- 作業チェックリスト
 - 顧客回答テンプレート
+- 公開用に抽象化した運用スクリプト
 
-これは、Governanceの考え方を実際の運用作業に落とし込む例として扱う。
+## 9. 初期版の優先順位
 
-## 10. 初期版の優先順位
+初期版では、以下の順で整備します。
 
-初期版では、以下の順に整備する。
-
-1. Overview / Scope / Requirements
+1. Scope / Overview
 2. Governance Design
-3. Policy Baseline
-4. RBAC / Tag / Monitoring / Cost / Exception / Validation
-5. Bicep Skeleton
-6. Azure CLI Runbook
-7. Evidence Template
-8. ADR
-9. AVD Operations Standardization
+3. Policy / RBAC / Tag / Log / Cost / Exception
+4. Bicep Skeleton
+5. Azure CLI Runbook
+6. Evidence Template
+7. ADR
+8. AVD Operations Standardization
+9. PoC実行結果の反映
 
-AVD運用標準化は重要だが、先にGovernance Baselineを固める。
-そうすることで、AVDスクリプト群が単なる便利ツールではなく、CloudOps標準化の実例として見える。
+## 10. まとめ
 
-## 11. まとめ
+本構成は、Azure環境を継続的に管理するための最小構成を示すものです。
 
-本構成は、Azure利用拡大前に必要となる最低限の統制を、設計、IaC、Runbook、Evidenceとして整理するものである。
-
-重要なのは、個別リソースを作れることではなく、Azure環境を継続的に管理できる状態にすること。
-そのために、Policy、RBAC、Tag、Log、Cost、Exception、Evidenceを分けて考え、後から追える形にする。
+個別リソースを作れることではなく、統制、運用、検証、証跡をセットで扱える状態を重視します。
