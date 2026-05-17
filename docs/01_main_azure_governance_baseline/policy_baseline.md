@@ -29,7 +29,7 @@ Policyの目的は、リソース作成を単純に制限することではあ�
 | Management Group | 複数Subscriptionへ展開する場合の拡張候補 |
 | Subscription | 初期PoCの基本適用単位 |
 | Resource Group | 用途別の検証や例外適用の候補 |
-| Resource | 個別のTag、Diagnostic Settings確認 |
+| Resource | 個別のTag、Monitoring Baseline確認。Diagnostic Settings詳細適用は将来拡張 |
 
 初期PoCでは、Management Groupを作成可能な環境であっても必須にはしません。まずはSubscription単位でPolicyの割り当て、確認、Evidence化を行います。
 

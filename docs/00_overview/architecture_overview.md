@@ -53,7 +53,7 @@ Subscription
    └─ Sample workload resources
 ~~~
 
-この構成で、監視・ログ出力先、Policy、RBAC、Tag標準を確認できる状態にします。
+この構成で、Log Analytics Workspace、VNet、Policy、Tag標準、PoC実行権限の確認を行える状態にします。
 
 ## 4. スコープ設計
 
@@ -76,7 +76,7 @@ Management Groupを最初から必須にしない理由は、個人検証環境�
 | RBAC | 作業者、スコープ、権限範囲を整理する |
 | Tagging Standard | 所有者、環境、コスト、用途を追えるようにする |
 | Log Analytics | ログ出力先を標準化する |
-| Diagnostic Settings | 必要なリソースログを取得できる状態にする |
+| Monitoring Baseline | Log Analytics Workspaceを共通ログ出力先として用意する。Diagnostic Settings詳細適用は将来拡張 |
 | Cost Management | TagとResource Groupを使い、コストの所在を追いやすくする |
 | Exception Operation | 標準から外れる場合の理由、期限、承認を記録する |
 | Evidence | 設計、実装、検証結果を後から確認できるようにする |
@@ -100,7 +100,7 @@ infra/
    └─ network/
 ~~~
 
-初期実装では、Resource Group、Log Analytics Workspace、Policy Assignment、RBAC Assignment、Tag、最小ネットワーク構成を中心にします。
+現行PoCでは、Resource Group、Log Analytics Workspace、VNet、Custom Policy Definition、Policy Assignment、Tag、最小ネットワーク構成を中心にします。RBAC Assignmentの自動作成とDiagnostic Settings詳細適用は将来拡張として扱います。
 
 ## 7. RunbookとEvidence
 
@@ -111,8 +111,8 @@ Evidenceは、次の結果を記録するために用意します。
 - What-If結果
 - Deployment結果
 - Policy Assignment確認
-- RBAC確認
-- Diagnostic Settings確認
+- RBAC設計とPoC実行権限確認
+- Monitoring Baseline確認
 - Validation Summary
 
 実Tenant ID、Subscription ID、UPN、顧客固有値は記録しません。必要な場合はサンプル値またはマスク値に置き換えます。

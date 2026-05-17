@@ -174,8 +174,8 @@ Evidenceは、設計と実装結果の整合性を確認するために残しま
 2. Log Analytics Workspace
 3. Tag標準
 4. Policy Assignment
-5. RBAC Assignment
-6. Diagnostic Settings確認
+5. RBAC設計 / PoC実行権限確認
+6. Monitoring Baseline確認
 7. What-If / Deploy / Validate / Teardown Runbook
 8. Evidence反映
 

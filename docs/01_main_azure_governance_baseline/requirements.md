@@ -45,9 +45,9 @@
 | FR-001 | Resource Group作成 | 共通基盤、監視、検証用のResource Groupを作成できること |
 | FR-002 | Tag標準 | 必須Tagを定義し、Resource GroupやResourceへ付与できること |
 | FR-003 | Policy Assignment | 必須Tag、利用リージョン、Public IPなどのPolicyを割り当てられること |
-| FR-004 | RBAC Assignment | 想定ロールを想定スコープへ割り当てられること |
+| FR-004 | RBAC設計 / PoC実行権限 | PoC実行用ユーザーに必要なロールを事前付与し、確認できること。BicepによるRBAC Assignment自動作成は将来拡張 |
 | FR-005 | Log Analytics Workspace | 共通ログ出力先を作成できること |
-| FR-006 | Diagnostic Settings確認 | 対象リソースのログ出力設定を確認できること |
+| FR-006 | Monitoring Baseline確認 | Log Analytics Workspace / VNetの作成状態を確認できること。Diagnostic Settings詳細適用は将来拡張 |
 | FR-007 | What-If | デプロイ前に差分確認ができること |
 | FR-008 | Validation | デプロイ後に主要設定を確認できること |
 | FR-009 | Teardown | 検証後に対象リソースを削除できること |
@@ -113,9 +113,9 @@
 
 | 区分 | 実装対象 |
 |---|---|
-| IaC | Resource Group、Log Analytics Workspace、Policy Assignment、RBAC Assignment、Tag |
+| IaC | Resource Group、Log Analytics Workspace、VNet、Custom Policy Definition、Policy Assignment、Tag。RBAC Assignment自動作成は将来拡張 |
 | Runbook | What-If、Deploy、Validate、Teardown |
-| Evidence | What-If結果、Deployment結果、Policy確認、RBAC確認、Diagnostic Settings確認、Validation Summary |
+| Evidence | What-If結果、Deployment結果、Policy確認、RBAC設計とPoC実行権限確認、Monitoring Baseline確認、Validation Summary |
 | Docs | Governance、Policy、RBAC、Tag、Monitoring、Cost、Exception、Validation |
 
 AVD運用標準化は、サブテーマとして別に扱います。

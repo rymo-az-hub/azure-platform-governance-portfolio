@@ -4,7 +4,7 @@
 
 この文書では、Azure Governance Baselineを適用した後の確認計画を整理します。
 
-設計書やBicepを作成しても、実際に意図した状態になっているかを確認しなければ、運用に渡せる状態とは言えません。初期PoCでは、What-If、Deploy、Policy、RBAC、Tag、Diagnostic Settings、Teardownの結果をEvidenceとして残します。
+設計書やBicepを作成しても、実際に意図した状態になっているかを確認しなければ、運用に渡せる状態とは言えません。現行PoCでは、What-If、Deploy、Policy、RBAC設計とPoC実行権限、Tag、Monitoring Baseline、Teardownの結果をEvidenceとして残します。
 
 ## 2. 基本方針
 
@@ -25,8 +25,8 @@
 | Tag | 必須Tagが付与されているか |
 | Log Analytics Workspace | 作成と基本設定ができているか |
 | Policy Assignment | 想定スコープに割り当てられているか |
-| RBAC Assignment | 想定ロールが想定スコープに付与されているか |
-| Diagnostic Settings | 対象リソースに設定されているか |
+| RBAC設計 / PoC実行権限 | PoC実行用ユーザーに必要なロールが事前付与されているか。BicepによるRBAC Assignment自動作成は行わない |
+| Monitoring Baseline | Log Analytics Workspace / VNetが確認できるか。Diagnostic Settings詳細適用は将来拡張 |
 | Teardown | 検証後に削除できるか |
 
 ## 4. 事前確認
@@ -47,7 +47,7 @@ az account show
 az deployment sub what-if \
   --location japaneast \
   --template-file infra/main.bicep \
-  --parameters infra/parameters/dev.bicepparam
+  --parameters infra/parameters/lowcost-demo.bicepparam
 ```
 
 記録先は `docs/04_evidence/01-what-if-result.md` です。
@@ -60,7 +60,7 @@ az deployment sub what-if \
 az deployment sub create \
   --location japaneast \
   --template-file infra/main.bicep \
-  --parameters infra/parameters/dev.bicepparam
+  --parameters infra/parameters/lowcost-demo.bicepparam
 ```
 
 デプロイ後は、成功したかだけではなく、主要リソースが想定どおり作成されているかを確認します。
@@ -133,29 +133,38 @@ az role assignment list --scope <scope> --output table
 
 ## 9. Monitoring確認
 
+現行PoCでは、Monitoring BaselineとしてLog Analytics WorkspaceとVNetの作成状態を確認します。
+
 Log Analytics Workspaceを確認します。
 
-```bash
+~~~bash
 az monitor log-analytics workspace show \
   --resource-group <resource-group-name> \
   --workspace-name <workspace-name>
-```
+~~~
 
-Diagnostic Settingsを確認します。
+VNetを確認します。
 
-```bash
+~~~bash
+az network vnet show \
+  --resource-group <resource-group-name> \
+  --name <vnet-name>
+~~~
+
+Diagnostic Settings詳細適用は将来拡張です。必要になった場合は、以下のように対象リソース単位で確認します。
+
+~~~bash
 az monitor diagnostic-settings list \
   --resource <resource-id>
-```
+~~~
 
 確認観点は以下です。
 
-- Workspaceが作成されているか
-- Diagnostic Settingsが設定されているか
-- 出力先Workspaceが正しいか
-- 不要なログカテゴリを収集していないか
+- Log Analytics Workspaceが作成されているか
+- VNetが作成されているか
+- Diagnostic Settings詳細適用、Activity Log export、Alertは将来拡張として整理されているか
 
-記録先は `docs/04_evidence/05-diagnostic-settings-result.md` です。
+記録先は `docs/04_evidence/05-diagnostic-settings-result.md` です。現行PoCではMonitoring Baseline Resultとして記録します。
 
 ## 10. Validation Summary
 
@@ -167,7 +176,7 @@ az monitor diagnostic-settings list \
 
 - 検証日
 - 対象Subscription
-- 対象Commit
+- Public review baselineまたは検証時点
 - 実行したRunbook
 - 確認結果
 - 未確認項目
@@ -213,4 +222,4 @@ Evidenceには、以下をそのまま残しません。
 
 Validationでは、デプロイできたことだけではなく、設計どおりの状態になっているかを確認します。
 
-What-If、Deploy、Policy、RBAC、Tag、Monitoring、Teardownの結果をEvidenceとして残すことで、設計、実装、運用確認をつなげます。
+What-If、Deploy、Policy、RBAC設計とPoC実行権限、Tag、Monitoring Baseline、Teardownの結果をEvidenceとして残すことで、設計、実装、運用確認をつなげます。
