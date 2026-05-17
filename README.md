@@ -8,37 +8,59 @@ The main theme is **Azure Governance / Policy Baseline** for a mid-sized organiz
 
 This repository is intended to show how Azure platform operations can be standardized through design documents, Infrastructure as Code, runbooks, ADRs, and evidence.
 
-The focus is not only on creating Azure resources, but on explaining why specific controls are required and how they should be operated.
+The focus is not only on creating Azure resources. It also explains why specific controls are required, how they should be operated, and how operation results should be recorded.
 
-## Main Theme
+## Target Scenario
 
-### Azure Governance / Policy Baseline
+The assumed scenario is a mid-sized organization that has started using Azure and wants to introduce minimum platform governance before Azure usage expands further.
 
-The main design area covers:
+The initial scope is intentionally lightweight. It focuses on a single Subscription-level baseline rather than a full Enterprise Scale Landing Zone.
 
-- Management Group / Subscription / Resource Group structure
-- Azure Policy baseline
-- RBAC design
-- Tagging standard
-- Diagnostic Settings and Log Analytics
-- Cost management considerations
-- Exception handling
-- Validation and evidence
+## Main Theme: Azure Governance / Policy Baseline
 
-## Secondary Theme
+The main design area covers the following topics.
 
-### AVD Operations Standardization
+| Area | Document |
+|---|---|
+| Requirements | `docs/01_main_azure_governance_baseline/requirements.md` |
+| Governance design | `docs/01_main_azure_governance_baseline/governance_design.md` |
+| Policy baseline | `docs/01_main_azure_governance_baseline/policy_baseline.md` |
+| RBAC design | `docs/01_main_azure_governance_baseline/rbac_design.md` |
+| Tagging standard | `docs/01_main_azure_governance_baseline/tagging_standard.md` |
+| Monitoring and logging | `docs/01_main_azure_governance_baseline/monitoring_logging_design.md` |
+| Cost notes | `docs/01_main_azure_governance_baseline/cost_management_notes.md` |
+| Exception operation | `docs/01_main_azure_governance_baseline/exception_operation.md` |
+| Validation plan | `docs/01_main_azure_governance_baseline/validation_plan.md` |
 
-The AVD section provides examples of operational standardization, including:
+## Secondary Theme: AVD Operations Standardization
 
-- Host pool inventory and pre-check
-- Session host lifecycle operation
-- Personal Desktop assignment
-- Troubleshooting flow
-- Operation checklist
-- Customer response template
+The AVD section provides examples of operational standardization.
 
-The AVD content is positioned as an applied example of CloudOps standardization, not as the primary scope of the repository.
+This section is not the main scope of the repository. It is positioned as an applied CloudOps example that connects governance, operation design, automation, evidence, and customer-facing communication.
+
+| Area | Document |
+|---|---|
+| AVD operations design | `docs/02_sub_avd_operations_standardization/avd_ops_design.md` |
+| Inventory and pre-check | `docs/02_sub_avd_operations_standardization/inventory_and_precheck.md` |
+| SessionHost lifecycle | `docs/02_sub_avd_operations_standardization/sessionhost_lifecycle.md` |
+| Personal Desktop assignment | `docs/02_sub_avd_operations_standardization/personal_desktop_assignment.md` |
+| Troubleshooting flow | `docs/02_sub_avd_operations_standardization/troubleshooting_flow.md` |
+| Operation checklist | `docs/02_sub_avd_operations_standardization/operation_checklist.md` |
+| Customer response template | `docs/02_sub_avd_operations_standardization/customer_response_template.md` |
+
+## Implementation
+
+Infrastructure as Code is written in Bicep.
+
+Azure operations are executed mainly through Azure CLI. Windows + PowerShell 7 is used as the local execution environment for runbooks and helper scripts.
+
+| Area | Path |
+|---|---|
+| Bicep entry point | `infra/main.bicep` |
+| Bicep parameters | `infra/parameters/` |
+| Bicep modules | `infra/modules/` |
+| Azure CLI runbooks | `scripts/cli/` |
+| AVD operation scripts | `scripts/avd/` |
 
 ## Repository Structure
 
@@ -51,23 +73,92 @@ The AVD content is positioned as an applied example of CloudOps standardization,
 │  ├─ 03_adr/
 │  └─ 04_evidence/
 ├─ infra/
+│  ├─ main.bicep
+│  ├─ modules/
+│  └─ parameters/
 ├─ scripts/
 │  ├─ cli/
 │  └─ avd/
+├─ .vscode/
 ├─ .gitignore
 └─ .gitattributes
 ```
 
 ## Reading Guide
 
-1. Start with `docs/00_overview/portfolio_scope.md`
-2. Read the main design in `docs/01_main_azure_governance_baseline/README.md`
-3. Check the IaC structure in `infra/README.md`
-4. Check operational procedures in `scripts/cli/README.md`
-5. Review AVD operational examples in `docs/02_sub_avd_operations_standardization/README.md`
-6. Review design decisions in `docs/03_adr/README.md`
-7. Review validation records in `docs/04_evidence/README.md`
+Recommended reading order:
+
+1. `docs/00_overview/architecture_overview.md`
+2. `docs/00_overview/design_principles.md`
+3. `docs/01_main_azure_governance_baseline/requirements.md`
+4. `docs/01_main_azure_governance_baseline/governance_design.md`
+5. `docs/01_main_azure_governance_baseline/policy_baseline.md`
+6. `infra/main.bicep`
+7. `scripts/cli/README.md`
+8. `docs/04_evidence/06-validation-summary.md`
+9. `docs/03_adr/adr-001-landing-zone-lite-scope.md`
+10. `docs/02_sub_avd_operations_standardization/avd_ops_design.md`
+
+## Validation Flow
+
+The basic validation flow is as follows.
+
+```text
+Review requirements and design
+  ↓
+Run Bicep build
+  ↓
+Run What-If
+  ↓
+Deploy baseline
+  ↓
+Validate Policy / RBAC / Tag / Log settings
+  ↓
+Record Evidence
+  ↓
+Teardown validation resources when no longer needed
+```
+
+## Evidence
+
+Evidence templates are stored under `docs/04_evidence/`.
+
+They are used to record:
+
+- What-If result
+- Deployment result
+- Policy assignment result
+- RBAC validation result
+- Diagnostic Settings result
+- Validation summary
+
+Environment-specific identifiers such as tenant IDs, subscription IDs, principal IDs, UPNs, and customer-specific values should be masked before publishing evidence.
+
+## Design Decisions
+
+Architecture Decision Records are stored under `docs/03_adr/`.
+
+Current ADRs cover:
+
+- Landing Zone Lite scope
+- Governance / Policy Baseline as the main theme
+- RBAC model
+- Monitoring and Diagnostic Settings
+- AVD operations standardization
 
 ## Current Status
 
-Initial repository structure is being prepared. Detailed design documents, Bicep templates, runbooks, and evidence will be added progressively.
+The initial portfolio structure is available.
+
+Included:
+
+- Overview documents
+- Azure Governance Baseline design documents
+- Initial Bicep skeleton
+- Azure CLI runbooks
+- Evidence templates
+- ADRs
+- AVD operation standardization documents
+- AVD script samples and public script skeletons
+
+Next improvements will focus on script refinement, validation evidence, and README-level navigation cleanup.
