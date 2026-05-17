@@ -83,13 +83,50 @@ PIMの詳細設計は初期PoCの対象外ですが、一時権限の考え方�
 
 ## 8. 実装方針
 
-RBAC AssignmentはBicepで管理します。
+RBAC Assignmentは、設計上はBicepで管理できる対象とします。
 
 ```text
 infra/modules/rbac/main.bicep
 ```
 
-主なパラメータは以下です。
+ただし、初期PoCでは `enableRbacAssignments = false` とし、BicepによるRole Assignment作成は行いません。
+
+理由は以下です。
+
+| 項目 | 内容 |
+|---|---|
+| 実Principal IDの扱い | 公開リポジトリに実ユーザー、実グループ、実Principal IDを含めないため |
+| 権限要件 | Role Assignment作成には `Microsoft.Authorization/roleAssignments/write` 相当の権限が必要なため |
+| PoCの目的 | Governance Baselineの主要フロー確認を優先し、権限付与の自動化は拡張対象とするため |
+| 安全性 | 検証用Subscriptionであっても、不要なRBAC Assignment作成を避けるため |
+
+初期PoCでは、検証用の実行アカウントに必要なロールを事前付与して実行します。
+
+| Principal | Role | Scope | 扱い |
+|---|---|---|---|
+| PoC実行用ユーザー | Contributor | Subscription | Resource Group、Log Analytics、VNet等の作成用 |
+| PoC実行用ユーザー | Resource Policy Contributor | Subscription | Policy Definition / Assignment作成用 |
+
+検証後は、PoC実行用ユーザーとRole Assignmentを削除し、残存がないことを確認します。
+
+## 9. BicepでRBAC Assignmentを有効化する場合
+
+将来 `enableRbacAssignments = true` にする場合は、以下を満たす必要があります。
+
+| 確認項目 | 内容 |
+|---|---|
+| 実行権限 | Role Assignment作成権限が必要。通常はOwnerまたはUser Access Administrator相当を利用する |
+| Principal ID | 実Principal IDを公開リポジトリに含めず、非公開パラメータまたはCI/CD Secretで渡す |
+| スコープ | Subscription全体ではなく、必要なResource Groupまたは最小スコープを優先する |
+| 事前承認 | 誰に、どのロールを、どのスコープで付与するかを承認する |
+| Evidence | 作成結果と削除結果を記録する |
+| 後片付け | PoC用途の一時権限は検証後に削除する |
+
+このため、公開版の初期PoCではRBAC Assignment作成を無効化し、権限付与はPoC準備作業として分離しています。
+
+## 10. 主なパラメータ
+
+RBACモジュールを使う場合の主なパラメータは以下です。
 
 - `principalId`
 - `roleDefinitionId`
@@ -97,20 +134,22 @@ infra/modules/rbac/main.bicep
 - `assignmentName`
 - `description`
 
-実Principal IDは公開リポジトリに含めません。必要な場合はパラメータとして渡す設計にします。
+実Principal IDは公開リポジトリに含めません。必要な場合は、非公開のパラメータ、CI/CD Secret、または環境ごとの安全な入力手段で渡します。
 
-## 9. 確認方針
+## 11. 確認方針
 
 Azure CLIで割り当て状態を確認します。
 
 ```bash
 az role assignment list --scope <scope> --output table
-az role assignment list --assignee <principal-id> --all --output table
+az role assignment list --assignee <principal-id> --output table
 ```
+
+公開Evidenceに記録する場合は、Subscription ID、Tenant ID、Principal ID、UPN、実グループ名はマスクします。
 
 確認結果は、`docs/04_evidence/04-rbac-validation-result.md` に記録します。
 
-## 10. 運用時の確認観点
+## 12. 運用時の確認観点
 
 - Subscription全体に不要なOwner / Contributorがないか
 - 個人へ直接付与していないか
@@ -118,9 +157,10 @@ az role assignment list --assignee <principal-id> --all --output table
 - 退職者、異動者、不要グループが残っていないか
 - 一時権限が期限後に削除されているか
 - Readerの付与範囲が広すぎないか
+- Evidenceに実Principal情報が残っていないか
 
-## 11. まとめ
+## 13. まとめ
 
 RBACでは、作業を通すことよりも、操作範囲と責任範囲を明確にすることを重視します。
 
-初期PoCでは、Subscription全体の強権限を絞り、通常運用はResource Group単位で分離します。
+初期PoCでは、BicepによるRBAC Assignment作成は無効化し、PoC実行用ユーザーへの事前付与と後片付けをEvidenceとして確認します。
