@@ -27,6 +27,7 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | RBAC | OK | `04-rbac-validation-result.md` |
 | Log Analytics / VNet | OK | `05-diagnostic-settings-result.md` |
 | Teardown | OK | 本文書に記録 |
+| 実行用アカウント後片付け | OK | `04-rbac-validation-result.md` |
 
 ## 4. 受け入れ条件
 
@@ -41,6 +42,7 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | Policy stateでPoC対象リソースが準拠している | OK | Workspace / VNet ともにCompliant |
 | RBAC Assignmentが制御されている | OK | Bicepでは作成なし。PoC用ユーザーへ事前付与 |
 | 検証後にリソースを削除できる | OK | Resource Group / Policy Assignment / Policy Definition削除済み |
+| 検証後に実行用アカウントを削除できる | OK | User / Role Assignment ともに残存なし |
 | Evidenceに機密情報が残っていない | OK | Subscription ID / Tenant ID / UPN等はマスク |
 
 ## 5. Teardown結果
@@ -53,7 +55,7 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | Policy Assignment | OK | `apg-sandbox-*` 7件を削除済み |
 | Policy Definition | OK | `apg-sandbox-*` 3件を削除済み |
 | 残存確認 | OK | 対象Resource Group / Policy Assignment / Policy Definitionは表示なし |
-| 実行用アカウントの後片付け | 未実施 | 再PoC後に実施予定 |
+| 実行用アカウントの後片付け | OK | User / Role Assignment ともに残存なし |
 
 ## 6. 既知の制約
 
@@ -72,7 +74,7 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 |---|---|
 | Baselineを受け入れるか | 受け入れ可 |
 | 必要な修正 | 初期PoCとしては必須修正なし |
-| 次の対応 | 再PoC用実行アカウントの後片付け、READMEとEvidenceの最終整合確認 |
+| 次の対応 | READMEとEvidenceの最終整合確認 |
 
 ## 8. メモ
 
@@ -81,3 +83,5 @@ PoCはOwner常用ではなく、PoC用の実行アカウントにContributorとR
 初期PoCでは、Subscriptionスコープで軽量なGovernance Baselineを作成し、What-If、Deploy、Validate、Policy state確認、Teardownまで確認できました。
 
 Policy AssignmentはSubscriptionスコープであるため、既存リソースも評価対象になります。PoC対象リソースはCompliantであり、既存リソースではTag不足によるNonCompliantも検出されました。初期PoCではDenyではなくAuditにより、既存運用を止めずに逸脱を可視化することを目的としています。
+
+検証後、PoC用の実行アカウントとRole Assignmentの後片付けも完了しています。
