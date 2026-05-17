@@ -4,6 +4,25 @@
 
 Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cost、例外運用、Evidenceをどう管理するかを整理します。AVD運用標準化は、CloudOpsの考え方を実運用へ落としたサブテーマとして扱います。
 
+## 現在の状態
+
+初期PoCは完了済みです。
+
+確認済みの内容は以下です。
+
+| 項目 | 状態 |
+|---|---|
+| Bicep build | 完了 |
+| What-If | 完了 |
+| Deploy | 完了 |
+| Validate | 完了 |
+| Evidence反映 | 完了 |
+| Teardown | 完了 |
+| PoC実行用アカウント後片付け | 完了 |
+| ローカル品質チェック | 完了 |
+
+PoCでは、Owner常用ではなく、検証用の実行アカウントに必要なロールを事前付与して実行しました。検証後は、作成したResource Group、Policy Assignment、Policy Definition、実行用アカウントを削除済みです。
+
 ## 想定シナリオ
 
 Azure利用を広げる前に、Subscription単位で最低限の統制を整えるケースを想定しています。
@@ -82,7 +101,7 @@ AVD運用標準化は、Azure基盤運用の実務適用例として配置して
 9. `docs/03_adr/README.md`
 10. `docs/02_sub_avd_operations_standardization/avd_ops_design.md`
 
-## 検証の流れ
+## 検証済みの流れ
 
 ```text
 設計確認
@@ -97,8 +116,12 @@ Policy / RBAC / Tag / Log の確認
   ↓
 Evidence記録
   ↓
-不要リソース削除
+Teardown
+  ↓
+残存確認
 ```
+
+検証結果は `docs/04_evidence/` に記録しています。
 
 ## ローカル品質チェック
 
@@ -116,9 +139,3 @@ PowerShell 7で以下を実行します。
 - ADR: `docs/03_adr/`
 
 実Tenant ID、Subscription ID、Principal ID、UPN、顧客固有値は公開しません。必要な場合はサンプル値またはマスク値に置き換えます。
-
-## 現在の状態
-
-初期公開版として、設計資料、Bicep骨組み、Runbook、Evidenceテンプレート、ADR、AVD運用標準化資料、公開用スクリプト骨組みを配置済みです。
-
-次の段階では、実Azure環境でWhat-If、Deploy、Validate、Teardownを実行し、Evidenceへ結果を反映します。
