@@ -2,15 +2,11 @@
 
 ## 1. 目的
 
-この文書では、AVD Personal Desktop環境におけるAssignedUser割当作業の標準化方針を整理する。
+この文書では、AVD Personal Desktop環境におけるAssignedUser割当作業の標準化方針を整理します。
 
-AssignedUser割当は、単にSessionHostへユーザーを設定するだけの作業ではない。既存割当、重複割当、ユーザー存在、Desktop Application Groupの利用権限を確認しないと、割当後にユーザーが利用できない、または別ユーザーの利用環境を上書きする可能性がある。
-
-そのため、割当前に必要な確認を行い、DryRun、実行、結果出力、作業後確認までを標準化する。
+AssignedUser割当は、SessionHostへユーザーを設定するだけの作業ではありません。既存割当、重複割当、ユーザー存在、DAG権限を確認しないと、割当後に利用できない、または別ユーザーの環境を上書きする可能性があります。
 
 ## 2. 対象作業
-
-初期版では、以下を対象とする。
 
 | 作業 | 内容 |
 |---|---|
@@ -25,8 +21,6 @@ AssignedUser割当は、単にSessionHostへユーザーを設定するだけの
 
 ## 3. 非対象範囲
 
-以下は初期版では対象外とする。
-
 | 項目 | 理由 |
 |---|---|
 | AVD全体設計 | 本文書は割当運用の標準化が対象 |
@@ -36,8 +30,6 @@ AssignedUser割当は、単にSessionHostへユーザーを設定するだけの
 | 実UPNや実グループ名 | 公開リポジトリには含めない |
 
 ## 4. 基本方針
-
-Personal Desktop割当では、以下を基本方針とする。
 
 | 方針 | 内容 |
 |---|---|
@@ -51,19 +43,17 @@ Personal Desktop割当では、以下を基本方針とする。
 
 ## 5. 入力ファイル
 
-公開版では、以下のようなサンプルCSVを想定する。
+公開版では、以下のようなサンプルCSVを想定します。
 
-~~~csv
+```csv
 HostPoolResourceGroup,HostPoolName,SessionHostName,UserPrincipalName
 rg-avd-sample,hp-avd-sample,avd-host-001.contoso.local,user001@example.com
 rg-avd-sample,hp-avd-sample,avd-host-002.contoso.local,user002@example.com
-~~~
+```
 
-実運用では、実UPN、実HostPool名、実SessionHost名を公開しない。公開リポジトリではサンプル値に置き換える。
+実運用では、実UPN、実HostPool名、実SessionHost名を公開しません。
 
 ## 6. 事前確認
-
-割当前に確認する項目は以下。
 
 | 確認項目 | 内容 | 問題がある場合の扱い |
 |---|---|---|
@@ -74,15 +64,13 @@ rg-avd-sample,hp-avd-sample,avd-host-002.contoso.local,user002@example.com
 | Entra IDユーザー | UPNのユーザーが存在するか | スキップ |
 | DAG権限 | ユーザーが利用権限を持つか | 要確認またはスキップ |
 
-既存AssignedUserが空でない場合、作業者判断で上書きしない。上書きが必要な場合は、依頼元または運用責任者の承認を前提とする。
+既存AssignedUserが空でない場合、作業者判断で上書きしません。上書きが必要な場合は、依頼元または運用責任者の承認を前提にします。
 
 ## 7. DAG権限確認
 
-Personal Desktopでは、AssignedUserを設定しても、Desktop Application Group側の権限がなければユーザーは利用できない。
+Personal Desktopでは、AssignedUserを設定しても、Desktop Application Group側の権限がなければユーザーは利用できません。
 
-そのため、割当対象ユーザーがDAGを利用できる状態か確認する。
-
-確認観点は以下。
+確認観点は以下です。
 
 | 確認項目 | 内容 |
 |---|---|
@@ -91,11 +79,11 @@ Personal Desktopでは、AssignedUserを設定しても、Desktop Application Gr
 | ネストグループ | 必要に応じてネストグループを確認する |
 | 対象DAG | 割当先HostPoolに対応するDAGか |
 
-DAG権限が不足している場合、AssignedUserだけ設定しても利用できない。作業結果としては失敗ではなく、前提不足として扱う。
+DAG権限が不足している場合、AssignedUser設定だけでは解決しません。作業結果としては前提不足として扱います。
 
-## 8. DryRun
+## 8. DryRunと実行結果
 
-DryRunでは、実際の割当を行わず、以下を出力する。
+DryRunでは、実際の割当を行わず、以下を出力します。
 
 | 項目 | 内容 |
 |---|---|
@@ -107,30 +95,9 @@ DryRunでは、実際の割当を行わず、以下を出力する。
 | CanAssign | 割当可能か |
 | SkipReason | スキップ理由 |
 
-DryRunで確認し、問題がない対象のみ実行モードへ進む。
+実行後は、成功、失敗、スキップ理由、実行前後のAssignedUserをCSVまたはログとして出力します。
 
-## 9. 実行結果
-
-実行後は、以下をCSVまたはログとして出力する。
-
-| 項目 | 内容 |
-|---|---|
-| SessionHost | 対象SessionHost |
-| TargetUser | 割当対象ユーザー |
-| PreviousAssignedUser | 実行前のAssignedUser |
-| ResultAssignedUser | 実行後のAssignedUser |
-| Result | Success / Failed / Skipped |
-| Reason | 失敗またはスキップ理由 |
-| StartedAt | 開始時刻 |
-| FinishedAt | 終了時刻 |
-
-結果出力は、作業後確認とEvidenceに利用する。
-
-## 10. スキップ理由
-
-スキップ理由は、後から確認できるよう具体的に残す。
-
-代表例は以下。
+## 9. スキップ理由
 
 | SkipReason | 内容 |
 |---|---|
@@ -142,11 +109,9 @@ DryRunで確認し、問題がない対象のみ実行モードへ進む。
 | DagAccessNotConfirmed | DAG利用権限を確認できない |
 | DryRunOnly | DryRunのため実行していない |
 
-スキップは失敗ではない。作業条件を満たさない対象を安全に処理しなかった結果として扱う。
+スキップは失敗ではありません。作業条件を満たさない対象を安全に処理しなかった結果として扱います。
 
-## 11. 作業後確認
-
-割当後は、以下を確認する。
+## 10. 作業後確認
 
 | 確認項目 | 内容 |
 |---|---|
@@ -156,34 +121,15 @@ DryRunで確認し、問題がない対象のみ実行モードへ進む。
 | 結果CSV | 成功、失敗、スキップが記録されているか |
 | 顧客回答 | 必要に応じて確認結果を説明できるか |
 
-## 12. スクリプトとの対応
-
-この文書は、以下の公開用スクリプトと対応する。
+## 11. 関連スクリプト
 
 | Script | 役割 |
 |---|---|
 | `Set-AvdPersonalDesktopAssignment.ps1` | AssignedUser割当の事前確認、DryRun、実行、結果出力を行う |
 | `Export-AvdHostPoolInventory.ps1` | 割当前後の棚卸しに使う |
 
-実務で作成した割当スクリプトの考え方を利用するが、公開版では環境依存値や実案件情報を除去する。
+## 12. まとめ
 
-## 13. 責任分界
+Personal DesktopのAssignedUser割当では、割当操作そのものよりも、事前確認と作業後確認が重要です。
 
-Personal Desktop割当では、以下を分けて考える。
-
-| 領域 | 主な責任 |
-|---|---|
-| 割当対象の承認 | 依頼元または運用責任者 |
-| 入力ファイルの作成 | 作業者または依頼元 |
-| 事前確認 | 作業者 |
-| DAG権限不足時の判断 | 運用責任者または依頼元 |
-| スクリプト実行 | 作業者 |
-| 結果確認 | 作業者とレビュー者 |
-
-作業者は、承認されていない上書きや、権限不足を無視した割当を行わない。
-
-## 14. まとめ
-
-Personal DesktopのAssignedUser割当では、割当操作そのものよりも、事前確認と作業後確認が重要である。
-
-既存割当、重複割当、Entra IDユーザー、DAG権限を確認し、DryRunと結果出力を用意することで、誤割当や利用不可状態を減らす。
+既存割当、重複割当、Entra IDユーザー、DAG権限を確認し、DryRunと結果出力を用意することで、誤割当や利用不可状態を減らします。
