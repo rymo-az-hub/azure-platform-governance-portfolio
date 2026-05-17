@@ -1,8 +1,10 @@
-# Diagnostic Settings Result
+# Monitoring Baseline Result
 
 ## 1. 目的
 
-Log Analytics WorkspaceとDiagnostic Settingsの確認結果を記録します。
+Log Analytics WorkspaceとVNetの作成結果を確認し、初期PoCにおける監視基盤の入口が用意できていることを記録します。
+
+このEvidenceは、Diagnostic Settingsの詳細実装結果ではありません。初期PoCでは、ログ出力先となるLog Analytics Workspaceの作成確認までを対象とします。
 
 ## 2. 実行情報
 
@@ -22,6 +24,16 @@ Log Analytics WorkspaceとDiagnostic Settingsの確認結果を記録します�
   -ResourceNamePrefix "apg"
 ```
 
+VNetについては、以下の観点でも確認しました。
+
+```powershell
+az network vnet show `
+  --resource-group "rg-apg-sandbox-network" `
+  --name "vnet-apg-sandbox-shared" `
+  --query "{name:name,location:location,addressSpace:addressSpace.addressPrefixes,subnets:subnets[].name,tags:tags}" `
+  --output jsonc
+```
+
 ## 4. Log Analytics Workspace確認結果
 
 | 確認項目 | 結果 | 備考 |
@@ -33,25 +45,26 @@ Log Analytics WorkspaceとDiagnostic Settingsの確認結果を記録します�
 | Retention | OK | 30日 |
 | Tag | OK | 必須Tag付与済み |
 
-## 5. Diagnostic Settings確認結果
-
-| Resource | Setting | Destination | 結果 | 備考 |
-|---|---|---|---|---|
-| Log Analytics Workspace | N/A | N/A | 対象外 | 初期PoCではWorkspace作成確認まで |
-
-## 6. 補足確認
-
-VNetも想定どおり作成されていることを確認しました。
+## 5. VNet確認結果
 
 | 確認項目 | 結果 | 備考 |
 |---|---|---|
 | VNet名 | OK | `vnet-apg-sandbox-shared` |
+| Location | OK | `japaneast` |
 | Address space | OK | `10.10.0.0/16` |
 | Subnet | OK | `snet-shared` |
 | Tag | OK | 必須Tag付与済み |
 
+## 6. Diagnostic Settingsの扱い
+
+| 項目 | 結果 | 備考 |
+|---|---|---|
+| Diagnostic Settings詳細実装 | 対象外 | 初期PoCでは実装しない |
+| ログ出力先Workspace作成 | OK | `law-apg-sandbox-monitoring` |
+| 今後の拡張 | 要検討 | Activity Log、主要リソース、ログカテゴリ、コスト影響を整理して追加する |
+
 ## 7. 判断
 
-Log Analytics Workspaceは想定どおり作成されました。
+初期PoCとして、ログ出力先となるLog Analytics Workspaceと、最小ネットワーク構成であるVNetは想定どおり作成されました。
 
-初期PoCではDiagnostic Settingsの詳細設定までは実装対象外とし、ログ出力先の作成確認までを完了条件とします。
+Diagnostic Settingsの詳細設定は、対象リソース、ログカテゴリ、保持期間、コスト影響を整理したうえで、今後の拡張対象とします。
