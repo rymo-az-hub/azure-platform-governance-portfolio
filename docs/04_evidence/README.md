@@ -1,52 +1,51 @@
 # Evidence
 
-This directory stores validation records and execution evidence.
+このディレクトリには、Azure Governance Baselineの検証結果を記録します。
 
-Evidence should make it possible to understand what was validated, when it was validated, and what result was obtained.
+Evidenceは、コマンド出力をそのまま貼る場所ではありません。何を確認し、どの結果になり、未確認項目が何かを後から追えるように整理して残します。
 
-## Evidence Files
+## ファイル一覧
 
-| File | Purpose |
+| ファイル | 内容 |
 |---|---|
-| `01-what-if-result.md` | Records the deployment What-If result before making changes |
-| `02-deployment-result.md` | Records the deployment result and key outputs |
-| `03-policy-assignment-result.md` | Records Azure Policy assignment validation |
-| `04-rbac-validation-result.md` | Records RBAC assignment validation |
-| `05-diagnostic-settings-result.md` | Records Log Analytics and Diagnostic Settings validation |
-| `06-validation-summary.md` | Summarizes the overall validation result |
+| `01-what-if-result.md` | デプロイ前のWhat-If結果 |
+| `02-deployment-result.md` | デプロイ結果と主要リソース確認 |
+| `03-policy-assignment-result.md` | Azure Policy Assignment確認 |
+| `04-rbac-validation-result.md` | RBAC Assignment確認 |
+| `05-diagnostic-settings-result.md` | Log Analytics Workspace / Diagnostic Settings確認 |
+| `06-validation-summary.md` | 検証結果のまとめ |
 
-## Evidence Policy
+## 記録方針
 
-Evidence files must not include:
+Evidenceでは、以下を明確にします。
 
-- Real tenant IDs
-- Real subscription IDs
-- Customer names
-- Internal host names
-- Real user names or UPNs
-- Principal IDs from real environments
-- Confidential IP address lists
+- いつ確認したか
+- どのCommitを対象にしたか
+- どのRunbookまたはコマンドを使ったか
+- 何を確認したか
+- 結果はどうだったか
+- 未確認項目は何か
+- 次に必要な対応は何か
 
-When necessary, values should be masked or replaced with sample values.
+## 公開時の注意
 
-## Usage
+以下はそのまま記載しません。
 
-Evidence is not intended to be a raw dump of every command output.
+- 実Tenant ID
+- 実Subscription ID
+- 実Principal ID
+- 実UPN
+- 顧客名
+- 社内システム名
+- 実IPアドレス一覧
+- 実環境のResource名
 
-It should be reviewed and summarized so that another engineer can understand:
+必要な場合は、`<subscription-id>` や `rg-workload-sample` のようなサンプル値に置き換えます。
 
-- What was executed
-- What was checked
-- What result was obtained
-- What is still unconfirmed
-- Whether the result can be accepted
+## レビュー観点
 
-## Review Points
-
-When reviewing evidence, check whether the following points are clear.
-
-- The execution target is identifiable without exposing sensitive values
-- The command or runbook used for validation is clear
-- The result is specific enough to support the conclusion
-- Unchecked or out-of-scope items are explicitly recorded
-- The evidence can be connected back to the design documents and ADRs
+- 実行対象が分かるか
+- 検証結果が判断に使える粒度か
+- 未確認項目が明記されているか
+- 設計書、Runbook、ADRとつながっているか
+- 機密情報が残っていないか
