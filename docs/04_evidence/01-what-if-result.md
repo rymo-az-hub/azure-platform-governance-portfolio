@@ -16,7 +16,7 @@ Azure Governance Baselineのデプロイ前に実行したWhat-If結果を記録
 | Template | `infra/main.bicep` |
 | Parameter | `infra/parameters/lowcost-demo.bicepparam` |
 | Location | `japaneast` |
-| Commit | `915181d` |
+| Commit | `e4fe2f7` |
 
 ## 3. 実行コマンド
 
@@ -39,6 +39,15 @@ Azure Governance Baselineのデプロイ前に実行したWhat-If結果を記録
 | 想定外の削除 | OK | なし |
 | 想定外の変更 | OK | なし |
 
-## 5. 判断
+## 5. 出力要約
+
+```text
+Resource changes: 15 to create
+Delete: なし
+Modify: なし
+RBAC Assignment: なし
+```
+
+## 6. 判断
 
 What-If結果に想定外の削除や変更はなかったため、Deployへ進めると判断しました。
