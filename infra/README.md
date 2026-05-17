@@ -1,10 +1,10 @@
 # Infrastructure as Code
 
-This directory contains Bicep templates for the Azure Governance Baseline.
+このディレクトリには、Azure Governance Baselineを構成するBicepテンプレートを配置します。
 
-The initial implementation focuses on a lightweight, low-cost validation environment. It is intended to demonstrate structure, scope separation, parameterization, and validation flow rather than a full production landing zone.
+初期PoCでは、Subscriptionスコープで検証できる軽量な構成を扱います。本番向けLanding Zone全体を再現するのではなく、スコープ分離、パラメータ化、モジュール分割、検証手順を確認できることを重視します。
 
-## Structure
+## 構成
 
 ```text
 infra/
@@ -21,47 +21,46 @@ infra/
    └─ lowcost-demo.bicepparam
 ```
 
-## Scope
+## スコープ
 
-The initial Bicep entry point uses Subscription scope.
+初期PoCのエントリポイントはSubscriptionスコープです。
 
-Main deployment targets:
+主な対象は以下です。
 
-- Resource groups
+- Resource Group
 - Log Analytics Workspace
-- Minimal network resources
-- Custom policy definitions
-- Policy assignments
-- Optional RBAC assignment
-- Common tags
+- 最小ネットワーク構成
+- Policy Assignment
+- 任意のRBAC Assignment
+- 共通Tag
 
-## Parameters
+Management Groupは初期PoCの必須要素にはしません。複数Subscriptionへ展開する段階で、Management GroupスコープのPolicy Assignmentや階層設計を検討します。
 
-| File | Purpose |
+## パラメータ
+
+| ファイル | 用途 |
 |---|---|
-| `parameters/dev.bicepparam` | Standard development validation parameters |
-| `parameters/lowcost-demo.bicepparam` | Lower-cost demo parameters |
+| `parameters/dev.bicepparam` | 標準的な検証用パラメータ |
+| `parameters/lowcost-demo.bicepparam` | 低コスト検証向けパラメータ |
 
-Parameter files must not contain real tenant IDs, subscription IDs, user names, principal IDs, customer names, or internal environment identifiers.
+パラメータファイルには、実Tenant ID、実Subscription ID、実UPN、実Principal ID、顧客名、社内環境名を含めません。
 
 ## Build
 
-Run Bicep build from the repository root.
+リポジトリ直下で実行します。
 
 ```powershell
 az bicep build --file .\infra\main.bicep
 ```
 
-Generated JSON files are ignored by `.gitignore`.
+生成されるJSONファイルは `.gitignore` で除外します。
 
-## Deployment Flow
+## 実行の流れ
 
-Use the Azure CLI runbooks under `scripts/cli/`.
-
-Recommended flow:
+実行には `scripts/cli/` 配下のRunbookを使います。
 
 ```text
-Set context
+Azure CLI context確認
   ↓
 What-If
   ↓
@@ -69,26 +68,24 @@ Deploy
   ↓
 Validate
   ↓
-Record evidence
+Evidence記録
   ↓
-Teardown when no longer needed
+不要リソース削除
 ```
 
-## Design Notes
+## 設計メモ
 
-- Bicep is used as the primary IaC language
-- Azure CLI is used for deployment and validation
-- PowerShell 7 is used as the local runbook execution environment
-- Policy assignments start with Audit-first behavior
-- RBAC assignment is disabled by default unless a principal is provided
-- Deployment should be removable after validation
+- IaCはBicepを中心にする
+- 操作と検証はAzure CLIを基本にする
+- ローカル実行環境はPowerShell 7を想定する
+- PolicyはAudit中心から始める
+- RBAC AssignmentはPrincipalが指定された場合のみ扱う
+- 検証後に削除できる構成にする
 
-## Review Points
+## レビュー観点
 
-When reviewing this directory, check whether the following points are clear.
-
-- The deployment scope is explicit
-- Modules are separated by responsibility
-- Parameter files are safe for public repository usage
-- The implementation matches the design documents
-- The deployment can be validated and removed safely
+- Deployment Scopeが明確か
+- モジュールの責務が分かれているか
+- パラメータに実環境情報が含まれていないか
+- 設計書の内容とBicepが対応しているか
+- What-If、Deploy、Validate、Teardownの流れに乗せられるか
