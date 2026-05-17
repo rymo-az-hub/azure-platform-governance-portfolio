@@ -3,7 +3,8 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $false)]
-    [string]$Environment = "dev",
+    [string]$Environment = "sandbox",
+
     [Parameter(Mandatory = $false)]
     [string]$ResourceNamePrefix = "apg"
 )
@@ -21,12 +22,15 @@ $monitoringResourceGroupName = "rg-$ResourceNamePrefix-$Environment-monitoring"
 $networkResourceGroupName = "rg-$ResourceNamePrefix-$Environment-network"
 $workloadResourceGroupName = "rg-$ResourceNamePrefix-$Environment-workload-sample"
 $workspaceName = "law-$ResourceNamePrefix-$Environment-monitoring"
+$vnetName = "vnet-$ResourceNamePrefix-$Environment-shared"
+$namePrefix = "$ResourceNamePrefix-$Environment"
 
 Write-Host "Validation target"
 Write-Host "Monitoring RG: $monitoringResourceGroupName"
 Write-Host "Network RG   : $networkResourceGroupName"
 Write-Host "Workload RG  : $workloadResourceGroupName"
 Write-Host "Workspace    : $workspaceName"
+Write-Host "VNet         : $vnetName"
 Write-Host ""
 
 Write-Host "Current Azure account"
@@ -39,18 +43,53 @@ az group list `
     --output table
 
 Write-Host ""
+Write-Host "Resource group tags"
+foreach ($resourceGroupName in @($monitoringResourceGroupName, $networkResourceGroupName, $workloadResourceGroupName)) {
+    Write-Host "- $resourceGroupName"
+    az group show `
+        --name $resourceGroupName `
+        --query "{name:name,location:location,tags:tags}" `
+        --output jsonc
+}
+
+Write-Host ""
 Write-Host "Log Analytics Workspace"
 az monitor log-analytics workspace show `
     --resource-group $monitoringResourceGroupName `
     --workspace-name $workspaceName `
-    --query "{name:name,location:location,sku:sku.name,retentionInDays:retentionInDays}" `
+    --query "{name:name,location:location,sku:sku.name,retentionInDays:retentionInDays,tags:tags}" `
+    --output jsonc
+
+Write-Host ""
+Write-Host "Virtual Network"
+az network vnet show `
+    --resource-group $networkResourceGroupName `
+    --name $vnetName `
+    --query "{name:name,location:location,addressSpace:addressSpace.addressPrefixes,subnets:subnets[].name,tags:tags}" `
+    --output jsonc
+
+Write-Host ""
+Write-Host "Policy definitions"
+az policy definition list `
+    --query "[?contains(name, '$namePrefix')].{name:name,policyType:policyType,mode:mode}" `
     --output table
 
 Write-Host ""
 Write-Host "Policy assignments"
 az policy assignment list `
-    --query "[?contains(name, '$ResourceNamePrefix-$Environment')].{name:name,displayName:displayName,scope:scope}" `
+    --query "[?contains(name, '$namePrefix')].{name:name,displayName:displayName,scope:scope,enforcementMode:enforcementMode}" `
     --output table
+
+Write-Host ""
+Write-Host "Policy states"
+try {
+    az policy state list `
+        --query "[?contains(policyAssignmentName, '$namePrefix')].{assignment:policyAssignmentName,resource:resourceId,state:complianceState}" `
+        --output table
+}
+catch {
+    Write-Host "Policy state could not be retrieved. This can occur depending on evaluation timing or permissions."
+}
 
 Write-Host ""
 Write-Host "Role assignments for current subscription"
