@@ -1,35 +1,33 @@
 # Overview
 
-This directory contains overview documents for the Azure Platform Governance Portfolio.
+このディレクトリには、リポジトリ全体の前提、構成、設計方針をまとめています。
 
-Start here before reading the detailed design documents.
+詳細設計に入る前に、まずこのディレクトリを確認する想定です。
 
-## Documents
+## ドキュメント一覧
 
-| Document | Purpose |
+| ドキュメント | 内容 |
 |---|---|
-| `architecture_overview.md` | Explains the overall architecture and how the main and secondary themes are connected |
-| `design_principles.md` | Defines the design principles used across the repository |
-| `portfolio_scope.md` | Defines the portfolio scope, target readers, and public/private boundaries |
+| `portfolio_scope.md` | 対象読者、想定シナリオ、対象範囲、非対象範囲を整理 |
+| `architecture_overview.md` | Azure Governance BaselineとAVD運用標準化の全体構成を整理 |
+| `design_principles.md` | 設計時に重視する判断基準を整理 |
 
-## Reading Order
+## 推奨確認順
 
 1. `portfolio_scope.md`
 2. `architecture_overview.md`
 3. `design_principles.md`
 
-## Positioning
+## このディレクトリの位置づけ
 
-The overview documents explain the intent of the repository.
+このリポジトリは、単なるAzureリソース作成例やスクリプト集ではありません。
 
-They should make it clear that this repository is not just a collection of Azure resources or scripts. The purpose is to show how Azure platform operations can be designed, implemented, validated, and documented in a repeatable way.
+Azure基盤をどう設計し、どう運用へ渡し、どのように確認結果を残すかを示すための構成です。
 
-## Review Points
+そのため、このOverviewでは次の点を先に明確にします。
 
-When reviewing this section, check whether the following points are clear.
-
-- What this repository is intended to demonstrate
-- Who the assumed reader is
-- What is in scope and out of scope
-- How the Azure Governance Baseline and AVD operations standardization are connected
-- How public documents are separated from private notes
+- 何を示すリポジトリか
+- どの範囲を対象にするか
+- どの範囲を対象外にするか
+- Azure Governance BaselineとAVD運用標準化をどう位置づけるか
+- 公開資料と非公開メモをどう分けるか
