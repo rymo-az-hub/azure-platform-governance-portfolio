@@ -1,35 +1,58 @@
 # Policy Assignment Result
 
-## Purpose
+## 1. 目的
 
-This file records the validation result for Azure Policy definitions and assignments.
+この文書では、Azure Policy Assignmentの確認結果を記録します。
 
-## Validation Information
+Policyが想定スコープへ割り当てられているか、初期効果が想定どおりかを確認します。
 
-| Item | Value |
+## 2. 実行情報
+
+| 項目 | 内容 |
 |---|---|
-| Date | YYYY-MM-DD |
-| Operator | TBD |
-| Commit | TBD |
+| 実行日 | YYYY-MM-DD |
+| 実行者 | `<operator>` |
+| 対象Subscription | `<subscription-name>` |
+| 対象Scope | `<scope>` |
+| Commit | `<commit-sha>` |
 
-## Checks
+## 3. 確認コマンド
 
-| Policy | Expected effect | Result | Notes |
+```powershell
+az policy assignment list --scope <scope> --output table
+az policy assignment show --name <assignment-name> --scope <scope>
+```
+
+## 4. 確認結果
+
+| Policy | 期待する効果 | 結果 | 備考 |
 |---|---|---|---|
-| Require tag: Environment | Audit | Not checked |  |
-| Require tag: Owner | Audit | Not checked |  |
-| Require tag: CostCenter | Audit | Not checked |  |
-| Require tag: Workload | Audit | Not checked |  |
-| Require tag: ManagedBy | Audit | Not checked |  |
-| Allowed locations | Audit | Not checked |  |
-| Audit Public IP resources | Audit | Not checked |  |
+| Require tag: Environment | Audit | 未確認 |  |
+| Require tag: Owner | Audit | 未確認 |  |
+| Require tag: CostCenter | Audit | 未確認 |  |
+| Require tag: Workload | Audit | 未確認 |  |
+| Require tag: ManagedBy | Audit | 未確認 |  |
+| Allowed locations | Audit | 未確認 |  |
+| Audit Public IP resources | Audit | 未確認 |  |
 
-## Output
+## 5. 出力抜粋
 
-~~~text
+必要に応じて、Policy確認結果をマスクして貼り付けます。
+
+```text
 <policy assignment output>
-~~~
+```
 
-## Notes
+## 6. 判断
 
-Initial policy assignments use Audit first. Review the impact before moving any control to Deny.
+| 項目 | 内容 |
+|---|---|
+| Policy Assignmentは想定どおりか | 未判断 |
+| 保留事項 |  |
+| 次の対応 |  |
+
+## 7. 注意点
+
+- 初期PoCではAudit中心で確認する
+- Denyへ変更する場合は、影響範囲と例外運用を確認する
+- Scopeが想定より広くなっていないか確認する
