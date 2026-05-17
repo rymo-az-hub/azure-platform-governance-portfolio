@@ -4,7 +4,7 @@
 
 この文書では、Azure Governance Baselineにおける監視とログ収集の初期設計を整理します。
 
-監視とログは、障害対応、監査、運用改善の前提です。障害発生後にログ未設定へ気付いても、過去の情報は取得できません。そのため、Log Analytics WorkspaceとDiagnostic Settingsを初期設計に含めます。
+監視とログは、障害対応、監査、運用改善の前提です。障害発生後にログ未設定へ気付いても、過去の情報は取得できません。そのため、現行PoCではLog Analytics Workspaceを共通ログ出力先として用意し、Diagnostic Settings詳細適用は将来拡張として設計上の候補に含めます。
 
 ## 2. 基本方針
 
@@ -40,7 +40,7 @@ rg-apg-<env>-monitoring
 
 Diagnostic Settingsは、Azureリソースのログやメトリックを指定した出力先へ送る設定です。
 
-初期PoCでは、対象リソースに対してDiagnostic Settingsの設定有無を確認し、必要なものからLog Analytics Workspaceへ送ります。
+現行PoCでは、Diagnostic Settingsの詳細適用は実装対象外です。まずLog Analytics Workspaceを共通ログ出力先として作成し、各リソースへのDiagnostic Settings適用、Activity Log export、Alert設計は将来拡張として扱います。
 
 | 確認項目 | 内容 |
 |---|---|
@@ -56,10 +56,10 @@ Diagnostic Settingsは、Azureリソースのログやメトリックを指定�
 | 対象 | 目的 |
 |---|---|
 | Log Analytics Workspace | 共通ログ出力先の用意 |
-| Key Vault | 監査ログ、アクセス確認 |
-| Network Security Group | 通信確認、将来拡張 |
-| Storage Account | アクセスログ、公開設定確認 |
-| Activity Log | Subscriptionレベルの操作確認 |
+| VNet | Governance Baselineの検証対象リソース |
+| Diagnostic Settings | 将来拡張 |
+| Activity Log export | 将来拡張 |
+| Alert | 将来拡張 |
 
 すべてを初期実装に含める必要はありません。PoCでは、検証しやすいものから扱います。
 
@@ -109,7 +109,7 @@ infra/modules/monitoring/main.bicep
 - Log Analytics Workspace
 - Workspaceの保持期間
 - 共通Tag
-- 必要に応じたDiagnostic Settings
+- Diagnostic Settings詳細適用（将来拡張）
 
 主なパラメータは以下です。
 
@@ -117,7 +117,7 @@ infra/modules/monitoring/main.bicep
 - `location`
 - `retentionInDays`
 - `commonTags`
-- `diagnosticSettingName`
+- `diagnosticSettingName`（将来拡張）
 
 ## 10. 確認方針
 
@@ -136,7 +136,7 @@ az monitor diagnostic-settings list \
   --resource <resource-id>
 ```
 
-確認結果は、`docs/04_evidence/05-diagnostic-settings-result.md` に記録します。
+確認結果は、`docs/04_evidence/05-diagnostic-settings-result.md` に記録します。現行PoCではMonitoring Baseline Resultとして、Log Analytics Workspace / VNetの作成確認を中心に扱います。
 
 ## 11. 運用時の確認観点
 
@@ -150,6 +150,6 @@ az monitor diagnostic-settings list \
 
 ## 12. まとめ
 
-初期PoCでは、Log Analytics WorkspaceとDiagnostic Settingsを中心に、最低限ログを残せる状態を作ります。
+現行PoCでは、Log Analytics Workspaceを共通ログ出力先として作成し、監視・ログ基盤の土台を確認します。
 
-詳細なAlertやSentinel連携は将来拡張とし、まずは障害対応や監査対応で確認できるログ基盤を優先します。
+Diagnostic Settings詳細適用、Activity Log export、Alert、Sentinel連携は将来拡張とし、まずは障害対応や監査対応で確認できるログ基盤の入口を優先します。

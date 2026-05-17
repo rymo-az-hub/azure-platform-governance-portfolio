@@ -22,7 +22,7 @@ Azure Policy AssignmentとPolicy stateの確認結果を記録します。
   -ResourceNamePrefix "apg"
 ```
 
-Policy stateは、PoC対象リソースに絞って以下のように確認しました。
+Policy stateは、PoC対象リソースに絞って以下のように確認しました。`Test-GovernanceBaseline.ps1` はAssignment prefixを起点に広めに確認し、公開Evidenceでは、PoC対象Resource Groupに絞った確認例として整理しています。
 
 ```powershell
 $namePrefix = "apg-sandbox"

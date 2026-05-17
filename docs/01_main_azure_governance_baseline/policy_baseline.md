@@ -46,18 +46,22 @@ Policyの目的は、リソース作成を単純に制限することではあ�
 | Security | 公開設定や保護設定の不足を検出する |
 | Cost | コスト管理に必要な分類を確認する |
 
-初期実装では、Tag、Location、Public IP、Diagnostic Settingsを優先します。
+現行PoCの実装済みPolicyは、Required Tag、Allowed locations、Public IP auditの3つです。Diagnostic Settings、Storage Account、Key Vault関連Policyは、設計候補または将来拡張として扱います。
 
 ## 5. 初期Policy一覧
 
-| Policy | 目的 | 初期効果 | 将来候補 |
+現行PoCでは、実装済みPolicyと将来拡張候補を分けて扱います。
+
+| Policy | 目的 | 現行PoCでの扱い | 将来候補 |
 |---|---|---|---|
-| 必須Tag | 所有者、環境、コスト集計単位を確認する | Audit | Deny / Modify |
-| 利用可能リージョン | 管理対象外リージョンへの配置を検出する | Audit | Deny |
-| Public IP利用 | 意図しないインターネット公開を検出する | Audit | Deny |
-| Diagnostic Settings | ログ未設定を検出する | AuditIfNotExists | DeployIfNotExists |
-| Storage Account公開設定 | 意図しない公開アクセスを検出する | Audit | Deny |
-| Key Vault保護設定 | Soft Delete、Purge Protectionなどを確認する | Audit | Deny |
+| 必須Tag | 所有者、環境、コスト集計単位を確認する | Custom PolicyでAudit実装済み | Deny / Modify |
+| 利用可能リージョン | 管理対象外リージョンへの配置を検出する | Custom PolicyでAudit実装済み | Deny |
+| Public IP利用 | 意図しないインターネット公開を検出する | Custom PolicyでAudit実装済み | Deny |
+| Diagnostic Settings | ログ未設定を検出する | 設計候補。現行PoCでは未実装 | AuditIfNotExists / DeployIfNotExists |
+| Storage Account公開設定 | 意図しない公開アクセスを検出する | 将来拡張 | Audit / Deny |
+| Key Vault保護設定 | Soft Delete、Purge Protectionなどを確認する | 将来拡張 | Audit / Deny |
+
+現行PoCでは、Policyによる統制範囲を広げすぎず、Required Tag、Allowed locations、Public IP auditの3点に絞って、What-If、Deploy、Validate、Policy state確認、Teardownまでを一通り検証します。
 
 ## 6. Tag Policy
 
@@ -89,7 +93,7 @@ Public IPはセキュリティ影響が大きいため、作成状況を検出�
 
 Diagnostic Settingsは、障害対応や監査対応の前提になります。
 
-初期PoCでは、未設定を検出することを優先します。自動設定まで行う場合は、対象サービス、ログカテゴリ、Log Analytics Workspace、コスト影響を確認したうえでDeployIfNotExistsを検討します。
+現行PoCでは、Diagnostic Settings Policyは未実装です。Log Analytics Workspaceを共通ログ出力先として作成し、Diagnostic Settingsの詳細適用は将来拡張として扱います。自動設定まで行う場合は、対象サービス、ログカテゴリ、Log Analytics Workspace、コスト影響を確認したうえでDeployIfNotExistsを検討します。
 
 ## 10. Security関連Policy
 
@@ -134,7 +138,7 @@ Policy AssignmentはBicepで管理します。
 infra/modules/policy/main.bicep
 ```
 
-初期PoCでは、組み込みPolicyの割り当てを基本にします。カスタムPolicyは、組み込みPolicyで表現できない要件が出た場合に追加します。
+現行PoCでは、Required Tag、Allowed locations、Public IP auditをCustom Policyとして実装します。組み込みPolicyやPolicy Initiativeは、将来の本番寄り拡張で検討します。
 
 パラメータ化する主な項目は以下です。
 
@@ -143,7 +147,7 @@ infra/modules/policy/main.bicep
 - allowed locations
 - required tag names
 - effect
-- Log Analytics Workspace ID
+- Log Analytics Workspace ID（Diagnostic Settings詳細適用時の将来拡張）
 
 ## 14. 確認方針
 
