@@ -14,7 +14,7 @@ Log Analytics WorkspaceとVNetの作成結果を確認し、初期PoCにおけ�
 | 実行者 | `<poc-deployer-user>` |
 | 対象Subscription | `<subscription-name>` |
 | 対象Resource Group | `rg-apg-sandbox-monitoring` |
-| Commit | `915181d` |
+| Commit | `e4fe2f7` |
 
 ## 3. 確認コマンド
 
@@ -24,15 +24,7 @@ Log Analytics WorkspaceとVNetの作成結果を確認し、初期PoCにおけ�
   -ResourceNamePrefix "apg"
 ```
 
-VNetについては、以下の観点でも確認しました。
-
-```powershell
-az network vnet show `
-  --resource-group "rg-apg-sandbox-network" `
-  --name "vnet-apg-sandbox-shared" `
-  --query "{name:name,location:location,addressSpace:addressSpace.addressPrefixes,subnets:subnets[].name,tags:tags}" `
-  --output jsonc
-```
+強化後Validateでは、Resource Group、Tag、Log Analytics Workspace、VNet、Policy Definition、Policy Assignment、Policy stateを確認します。
 
 ## 4. Log Analytics Workspace確認結果
 
@@ -55,7 +47,15 @@ az network vnet show `
 | Subnet | OK | `snet-shared` |
 | Tag | OK | 必須Tag付与済み |
 
-## 6. Diagnostic Settingsの扱い
+## 6. Resource Group Tag確認結果
+
+| Resource Group | 結果 | 備考 |
+|---|---|---|
+| `rg-apg-sandbox-monitoring` | OK | 必須Tag付与済み |
+| `rg-apg-sandbox-network` | OK | 必須Tag付与済み |
+| `rg-apg-sandbox-workload-sample` | OK | 必須Tag付与済み |
+
+## 7. Diagnostic Settingsの扱い
 
 | 項目 | 結果 | 備考 |
 |---|---|---|
@@ -63,8 +63,10 @@ az network vnet show `
 | ログ出力先Workspace作成 | OK | `law-apg-sandbox-monitoring` |
 | 今後の拡張 | 要検討 | Activity Log、主要リソース、ログカテゴリ、コスト影響を整理して追加する |
 
-## 7. 判断
+## 8. 判断
 
 初期PoCとして、ログ出力先となるLog Analytics Workspaceと、最小ネットワーク構成であるVNetは想定どおり作成されました。
+
+Resource Group、Log Analytics Workspace、VNetには必須Tagが付与されていることも確認しました。
 
 Diagnostic Settingsの詳細設定は、対象リソース、ログカテゴリ、保持期間、コスト影響を整理したうえで、今後の拡張対象とします。
