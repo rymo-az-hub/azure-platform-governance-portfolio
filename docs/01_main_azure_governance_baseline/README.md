@@ -1,41 +1,58 @@
 # Azure Governance / Policy Baseline
 
-This directory contains the main design documents for the Azure governance baseline.
+This directory contains the main design documents for the Azure Governance Baseline.
 
-The goal is to define a practical minimum baseline for Azure platform control, rather than a full enterprise-scale landing zone.
-
-## Design Areas
-
-- Requirements and assumptions
-- Governance design
-- Azure Policy baseline
-- RBAC design
-- Tagging standard
-- Monitoring and logging design
-- Cost management notes
-- Exception operation
-- Validation plan
+This is the primary scope of the repository. It explains how to introduce a practical minimum baseline for Azure platform control before Azure usage expands further.
 
 ## Positioning
 
-This section is the primary scope of the repository.
+The purpose of this section is not to reproduce a full Enterprise Scale Landing Zone.
 
-It explains how Azure resources should be controlled, operated, and validated before workload usage expands.
+The initial target is a lightweight Subscription-level baseline that can be validated with low cost and extended later.
 
-## Planned Documents
+## Documents
 
-```text
-requirements.md
-governance_design.md
-policy_baseline.md
-rbac_design.md
-tagging_standard.md
-monitoring_logging_design.md
-cost_management_notes.md
-exception_operation.md
-validation_plan.md
-```
+| Document | Purpose |
+|---|---|
+| `requirements.md` | Defines the assumed customer, current issues, requirements, constraints, and acceptance criteria |
+| `governance_design.md` | Explains the overall governance design and control areas |
+| `policy_baseline.md` | Defines the initial Azure Policy baseline and Audit-first approach |
+| `rbac_design.md` | Defines the RBAC model, scope design, and role assignment policy |
+| `tagging_standard.md` | Defines required tags and tag operation policy |
+| `monitoring_logging_design.md` | Defines Log Analytics and Diagnostic Settings design principles |
+| `cost_management_notes.md` | Defines initial cost management and low-cost validation considerations |
+| `exception_operation.md` | Defines how exceptions should be recorded and reviewed |
+| `validation_plan.md` | Defines how the baseline should be validated and recorded as evidence |
 
-## Review Point
+## Recommended Reading Order
 
-The main review point is whether the governance baseline is practical for an organization that needs to start Azure control without introducing excessive complexity.
+1. `requirements.md`
+2. `governance_design.md`
+3. `policy_baseline.md`
+4. `rbac_design.md`
+5. `tagging_standard.md`
+6. `monitoring_logging_design.md`
+7. `cost_management_notes.md`
+8. `exception_operation.md`
+9. `validation_plan.md`
+
+## Design Policy
+
+The baseline follows these principles.
+
+- Start with a small and practical scope
+- Prefer Audit before Deny
+- Assign permissions by group and scope
+- Apply tags at creation time
+- Record validation results as evidence
+- Keep exception handling explicit
+- Avoid committing environment-specific identifiers
+
+## Review Points
+
+When reviewing this section, check whether the following points are clear.
+
+- The baseline is practical for a mid-sized organization
+- Governance controls are not over-engineered
+- Policy, RBAC, Tag, Log, Cost, Exception, and Evidence are connected
+- Operational acceptance is considered, not only resource deployment
