@@ -14,7 +14,7 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | 実行者 | `<poc-deployer-user>` |
 | 対象Subscription | `<subscription-name>` |
 | Parameter | `infra/parameters/lowcost-demo.bicepparam` |
-| Commit | `915181d` |
+| Commit | `e4fe2f7` |
 
 ## 3. 検証サマリー
 
@@ -23,6 +23,7 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | What-If | OK | `01-what-if-result.md` |
 | Deployment | OK | `02-deployment-result.md` |
 | Policy Assignment | OK | `03-policy-assignment-result.md` |
+| Policy state | OK | `03-policy-assignment-result.md` |
 | RBAC | OK | `04-rbac-validation-result.md` |
 | Log Analytics / VNet | OK | `05-diagnostic-settings-result.md` |
 | Teardown | OK | 本文書に記録 |
@@ -35,7 +36,9 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | 必須Tagが付与されている | OK | Environment / Owner / CostCenter / Workload / ManagedBy |
 | Log Analytics Workspaceが作成されている | OK | `law-apg-sandbox-monitoring` |
 | VNetが作成されている | OK | `vnet-apg-sandbox-shared` |
+| Policy Definitionが想定どおり作成されている | OK | 3件、Custom、Indexed |
 | Policy Assignmentが想定どおり作成されている | OK | 7件、すべてAudit |
+| Policy stateでPoC対象リソースが準拠している | OK | Workspace / VNet ともにCompliant |
 | RBAC Assignmentが制御されている | OK | Bicepでは作成なし。PoC用ユーザーへ事前付与 |
 | 検証後にリソースを削除できる | OK | Resource Group / Policy Assignment / Policy Definition削除済み |
 | Evidenceに機密情報が残っていない | OK | Subscription ID / Tenant ID / UPN等はマスク |
@@ -50,7 +53,7 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | Policy Assignment | OK | `apg-sandbox-*` 7件を削除済み |
 | Policy Definition | OK | `apg-sandbox-*` 3件を削除済み |
 | 残存確認 | OK | 対象Resource Group / Policy Assignment / Policy Definitionは表示なし |
-| 実行用アカウントの後片付け | OK | `04-rbac-validation-result.md` に記録 |
+| 実行用アカウントの後片付け | 未実施 | 再PoC後に実施予定 |
 
 ## 6. 既知の制約
 
@@ -69,12 +72,12 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 |---|---|
 | Baselineを受け入れるか | 受け入れ可 |
 | 必要な修正 | 初期PoCとしては必須修正なし |
-| 次の対応 | READMEとEvidenceの整合確認、必要に応じてPoC手順を補足 |
+| 次の対応 | 再PoC用実行アカウントの後片付け、READMEとEvidenceの最終整合確認 |
 
 ## 8. メモ
 
 PoCはOwner常用ではなく、PoC用の実行アカウントにContributorとResource Policy Contributorを付与して実行しました。
 
-初期PoCでは、Subscriptionスコープで軽量なGovernance Baselineを作成し、What-If、Deploy、Validate、Teardownまで確認できました。
+初期PoCでは、Subscriptionスコープで軽量なGovernance Baselineを作成し、What-If、Deploy、Validate、Policy state確認、Teardownまで確認できました。
 
-検証後、実行アカウントの後片付けも確認済みです。
+Policy AssignmentはSubscriptionスコープであるため、既存リソースも評価対象になります。PoC対象リソースはCompliantであり、既存リソースではTag不足によるNonCompliantも検出されました。初期PoCではDenyではなくAuditにより、既存運用を止めずに逸脱を可視化することを目的としています。
