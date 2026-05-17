@@ -29,5 +29,10 @@ evidence_raw/
 # CSV outputs generated from real environments
 *_real.csv
 *_prod.csv
+
+# AVD script outputs
+scripts/avd/output/*.csv
+scripts/avd/output/*.log
+
 # Bicep build outputs
 infra/**/*.json
