@@ -1,41 +1,39 @@
 # Architecture Decision Records
 
-This directory stores Architecture Decision Records for the repository.
+このディレクトリには、設計判断の記録を配置します。
 
-ADRs explain why a specific design decision was selected. They connect requirements, constraints, alternatives, and consequences.
+ADRは、採用した設計の理由、検討した代替案、受け入れた制約を後から確認できるようにするための文書です。詳細な手順は、設計書またはRunbook側に記載します。
 
-## ADR List
+## ADR一覧
 
-| ADR | Decision |
+| ADR | 判断 |
 |---|---|
-| `adr-001-landing-zone-lite-scope.md` | Use a lightweight Subscription-level Landing Zone scope for the initial version |
-| `adr-002-governance-policy-baseline.md` | Use Azure Governance / Policy Baseline as the main theme |
-| `adr-003-rbac-model.md` | Use minimum privilege and scope separation for RBAC |
-| `adr-004-monitoring-and-diagnostic-settings.md` | Use Log Analytics Workspace and Diagnostic Settings as the initial logging baseline |
-| `adr-005-avd-operations-standardization.md` | Position AVD operations standardization as a secondary applied CloudOps example |
+| `adr-001-landing-zone-lite-scope.md` | 初期PoCではSubscription単位の軽量なLanding Zone Liteとして扱う |
+| `adr-002-governance-policy-baseline.md` | Azure Governance / Policy Baselineを主テーマにする |
+| `adr-003-rbac-model.md` | RBACは最小権限とスコープ分離を基本にする |
+| `adr-004-monitoring-and-diagnostic-settings.md` | Log Analytics WorkspaceとDiagnostic Settingsを初期ログ基盤にする |
+| `adr-005-avd-operations-standardization.md` | AVD運用標準化をサブテーマとして扱う |
 
-## ADR Format
+## 記載方針
 
-Each ADR should include:
+各ADRでは、以下を記載します。
 
 - Status
 - Context
 - Decision
-- Alternatives considered
+- Alternatives Considered
 - Consequences
 
-## Review Points
+## レビュー観点
 
-When reviewing ADRs, check whether the following points are clear.
+- なぜその判断をしたか
+- どの代替案を見送ったか
+- どの制約を受け入れたか
+- 何を対象外にしたか
+- 設計、運用、Evidenceとどうつながるか
 
-- Why the selected approach was chosen
-- What alternatives were considered
-- What trade-offs were accepted
-- What is intentionally out of scope
-- How the decision connects to operation and validation
+## 注意点
 
-## Policy
+ADRは短く保ちます。
 
-ADRs should remain short enough to be read during a design review.
-
-Detailed procedures should be placed in design documents or runbooks, not inside ADRs.
+判断理由やトレードオフを記録する場所であり、詳細な作業手順やコマンドを記載する場所ではありません。
