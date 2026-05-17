@@ -1,55 +1,65 @@
 # Validation Summary
 
-## Purpose
+## 1. 目的
 
-This file summarizes the validation result for the Azure Governance Baseline.
+この文書では、Azure Governance Baselineの検証結果をまとめます。
 
-## Validation Information
+個別Evidenceの結果を集約し、初期PoCとして受け入れ可能か、追加対応が必要かを判断します。
 
-| Item | Value |
+## 2. 実行情報
+
+| 項目 | 内容 |
 |---|---|
-| Date | YYYY-MM-DD |
-| Operator | TBD |
-| Commit | TBD |
-| Parameter | infra/parameters/dev.bicepparam |
+| 検証日 | YYYY-MM-DD |
+| 実行者 | `<operator>` |
+| 対象Subscription | `<subscription-name>` |
+| Parameter | `infra/parameters/dev.bicepparam` |
+| Commit | `<commit-sha>` |
 
-## Summary
+## 3. 検証サマリー
 
-| Area | Result | Evidence |
+| 領域 | 結果 | Evidence |
 |---|---|---|
-| What-If | Not checked | 01-what-if-result.md |
-| Deployment | Not checked | 02-deployment-result.md |
-| Policy Assignment | Not checked | 03-policy-assignment-result.md |
-| RBAC | Not checked | 04-rbac-validation-result.md |
-| Diagnostic Settings | Not checked | 05-diagnostic-settings-result.md |
-| Teardown | Not checked | TBD |
+| What-If | 未確認 | `01-what-if-result.md` |
+| Deployment | 未確認 | `02-deployment-result.md` |
+| Policy Assignment | 未確認 | `03-policy-assignment-result.md` |
+| RBAC | 未確認 | `04-rbac-validation-result.md` |
+| Diagnostic Settings | 未確認 | `05-diagnostic-settings-result.md` |
+| Teardown | 未確認 | TBD |
 
-## Acceptance Criteria
+## 4. 受け入れ条件
 
-| Check | Result | Notes |
+| 確認項目 | 結果 | 備考 |
 |---|---|---|
-| Resource groups are created as expected | Not checked |  |
-| Required tags are applied | Not checked |  |
-| Log Analytics Workspace is created | Not checked |  |
-| Policy assignments are created as expected | Not checked |  |
-| RBAC assignments are controlled | Not checked | Disabled by default in the initial version |
-| Resources can be removed after validation | Not checked |  |
-| No sensitive values are recorded | Not checked |  |
+| Resource Groupが想定どおり作成されている | 未確認 |  |
+| 必須Tagが付与されている | 未確認 |  |
+| Log Analytics Workspaceが作成されている | 未確認 |  |
+| Policy Assignmentが想定どおり作成されている | 未確認 |  |
+| RBAC Assignmentが制御されている | 未確認 | 初期版では無効化されている場合あり |
+| 検証後にリソースを削除できる | 未確認 |  |
+| Evidenceに機密情報が残っていない | 未確認 |  |
 
-## Known Constraints
+## 5. 既知の制約
 
-| Area | Constraint |
+| 領域 | 制約 |
 |---|---|
-| Management Group | Out of scope for the initial version |
-| Alerting | Detailed alert design is out of scope |
-| Sentinel | Out of scope for the initial version |
-| PIM | Detailed design is out of scope |
-| Production operation | Initial version assumes a validation environment |
+| Management Group | 初期PoCでは必須にしない。将来拡張候補として扱う |
+| Alert | 詳細なAlert設計は対象外 |
+| Sentinel | 初期PoCでは対象外 |
+| PIM | 詳細設計は対象外 |
+| 本番運用 | 初期PoCは検証環境を前提とする |
 
-## Decision
+## 6. 判断
 
-| Item | Value |
+| 項目 | 内容 |
 |---|---|
-| Baseline accepted | Not decided |
-| Required fixes | TBD |
-| Next action | TBD |
+| Baselineを受け入れるか | 未判断 |
+| 必要な修正 | TBD |
+| 次の対応 | TBD |
+
+## 7. メモ
+
+- 個別Evidenceの結果と矛盾がないか確認する
+- 未確認項目を残す場合は理由を記録する
+- 実Tenant ID、Subscription ID、Principal ID、UPNは記載しない
+- Teardown結果も検証完了条件に含める
