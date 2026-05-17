@@ -1,3 +1,3 @@
-HostPoolResourceGroup,HostPoolName,SessionHostName,VmResourceGroup,VmName,DeleteVm,DeleteNic,DeleteDisk
-rg-avd-sample,hp-avd-sample,avd-host-001.contoso.local,rg-avd-sessionhosts,avd-host-001,true,true,false
-rg-avd-sample,hp-avd-sample,avd-host-002.contoso.local,rg-avd-sessionhosts,avd-host-002,true,true,false
+VmResourceGroupName,VmName
+rg-avd-sessionhosts,avd-host-001
+rg-avd-sessionhosts,avd-host-002
