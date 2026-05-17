@@ -39,6 +39,8 @@ $requiredFiles = @(
     "docs/04_evidence/06-validation-summary.md",
     "infra/main.bicep",
     "infra/parameters/dev.bicepparam",
+    "infra/parameters/lowcost-demo.bicepparam",
+    "infra/parameters/README.md",
     "scripts/cli/Invoke-WhatIf.ps1",
     "scripts/cli/Invoke-Deploy.ps1",
     "scripts/avd/Export-AvdHostPoolInventory.ps1",

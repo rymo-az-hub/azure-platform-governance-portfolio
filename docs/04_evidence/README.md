@@ -59,3 +59,23 @@ Evidenceでは、以下を明確にします。
 実Tenant ID、Subscription ID、Principal ID、UPN、顧客固有値、実環境固有値は公開しません。必要な値は `<subscription-id>`、`<tenant-id>`、`<poc-deployer-user>` などのマスク値に置き換えます。
 
 各Evidenceの `Baseline` は、特定の旧commit IDではなく、公開用に整理した現行mainブランチ相当の検証ベースラインを示します。
+
+| 項目 | 内容 |
+|---|---|
+| Baseline ID | `public-review-v1` |
+| Branch | `main` |
+| Parameter | `infra/parameters/lowcost-demo.bicepparam` |
+| Purpose | Public portfolio review baseline |
+
+## Design / Runbook / Evidence対応
+
+| 領域 | Design | Runbook / Script | Evidence |
+|---|---|---|---|
+| What-If | `docs/01_main_azure_governance_baseline/validation_plan.md` | `scripts/cli/Invoke-WhatIf.ps1` | `01-what-if-result.md` |
+| Deploy | `docs/01_main_azure_governance_baseline/validation_plan.md` | `scripts/cli/Invoke-Deploy.ps1` | `02-deployment-result.md` |
+| Policy | `docs/01_main_azure_governance_baseline/policy_baseline.md` | `scripts/cli/Test-GovernanceBaseline.ps1` | `03-policy-assignment-result.md` |
+| RBAC | `docs/01_main_azure_governance_baseline/rbac_design.md` | `scripts/cli/Test-GovernanceBaseline.ps1` | `04-rbac-validation-result.md` |
+| Monitoring Baseline | `docs/01_main_azure_governance_baseline/monitoring_logging_design.md` | `scripts/cli/Test-GovernanceBaseline.ps1` | `05-diagnostic-settings-result.md` |
+| Validation Summary | `docs/01_main_azure_governance_baseline/validation_plan.md` | `scripts/cli/Test-GovernanceBaseline.ps1` / `scripts/cli/Test-TeardownCleanup.ps1` | `06-validation-summary.md` |
+
+この対応表は、設計、実行手順、Evidenceのつながりを短時間で確認できるようにするためのものです。

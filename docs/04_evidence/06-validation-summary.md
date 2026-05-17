@@ -15,12 +15,14 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | 対象Subscription | `<subscription-name>` |
 | Parameter | `infra/parameters/lowcost-demo.bicepparam` |
 | Baseline | Public review baseline |
+| Baseline ID | `public-review-v1` |
+| Branch | `main` |
 
 ## 3. Evidenceの扱い
 
 このValidation Summaryは、公開レビュー用に実行結果をマスク・整理したサマリです。
 
-Baseline は、特定の旧commit IDではなく、公開用に整理した現行mainブランチ相当の検証ベースラインを示します。実Tenant ID、Subscription ID、Principal ID、UPN、顧客固有値は公開しません。
+Baseline は、特定の旧commit IDではなく、公開用に整理した現行mainブランチ相当の検証ベースラインを示します。本Summaryでは `public-review-v1` を公開レビュー用の検証ベースラインとして扱います。実Tenant ID、Subscription ID、Principal ID、UPN、顧客固有値は公開しません。
 
 ## 4. 検証サマリー
 

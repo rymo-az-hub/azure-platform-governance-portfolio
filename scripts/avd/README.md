@@ -61,6 +61,23 @@ AVD運用で発生しやすい作業について、対象整理、事前確認�
 
 既定ではDryRunとして動作し、実変更する場合のみ `-Execute` を明示します。
 
+
+## 削除前に確認する前提
+
+`Remove-AvdSessionHostResources.ps1` を実行する前に、少なくとも以下を確認します。
+
+| 確認項目 | 内容 |
+|---|---|
+| 変更管理 | 変更管理番号、作業依頼番号、または承認記録があること |
+| 削除対象 | 対象SessionHost / VMが削除対象として承認済みであること |
+| 利用者影響 | Active session、利用予定、業務影響を確認済みであること |
+| Backup | Backup対象、復元要否、保持要件を確認済みであること |
+| Lock | Resource Lockや保護設定の有無を確認済みであること |
+| Data Disk | OS Disk以外のData Diskや業務データ保持有無を確認済みであること |
+| 残存確認 | VM / NIC / Managed Diskの残存確認を行うこと |
+
+承認、影響範囲、Backup、Lock、Data Disk、業務データの扱いに不明点がある場合は、`-Execute` を使用せず、依頼元または運用責任者へ確認します。
+
 ## 実行例
 
 DryRun:
