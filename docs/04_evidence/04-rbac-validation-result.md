@@ -38,9 +38,18 @@ RBAC Assignmentの確認結果を記録します。
 | Bicepで不要なRBAC Assignmentを作成していないか | OK | 作成なし |
 | 事前付与ロールがPoC用途に限定されているか | OK | Contributor / Resource Policy Contributor |
 | 実Principal IDやUPNをEvidenceへ残していないか | OK | マスク値で記録 |
+| PoC完了後に実行用ユーザーを削除したか | OK | 削除済み |
 
-## 6. 判断
+## 6. 後片付け確認
+
+PoC完了後、実行用ユーザーに付与したロールを削除し、ユーザー自体も削除しました。
+
+対象ユーザーが残っていないことをAzure CLIで確認済みです。
+
+## 7. 判断
 
 PoCはOwner常用ではなく、PoC用ユーザーに必要なロールを付与して実行しました。
 
 初期PoCではBicepによるRBAC Assignmentを無効化しているため、新規のRole Assignmentは作成していません。
+
+PoC完了後、実行用ユーザーも削除済みです。
