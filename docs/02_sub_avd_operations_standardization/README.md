@@ -1,56 +1,52 @@
 # AVD Operations Standardization
 
-This directory contains operational standardization examples for Azure Virtual Desktop.
+このディレクトリでは、Azure Virtual Desktop運用の標準化例を整理します。
 
-The AVD content is a secondary theme. It shows how CloudOps practices can be applied to real operational tasks such as inventory, pre-check, dry run, execution, result output, troubleshooting, and customer communication.
+AVDは本リポジトリの主テーマではありません。Azure Governance / Policy Baselineで整理した考え方を、実運用へ適用したサブテーマとして扱います。
 
-## Positioning
+## 位置づけ
 
-This section is not intended to present AVD architecture as the main scope of the repository.
+ここで扱うのは、AVD全体アーキテクチャの設計ではなく、日常運用で発生しやすい作業の標準化です。
 
-It is an applied example of the Azure Governance Baseline. The goal is to show how operational tasks can be made safer, more repeatable, and easier to review.
+具体的には、作業対象の明確化、事前確認、DryRun、実行結果出力、スキップ理由、接続不可時の切り分け、顧客回答を整理します。
 
-## Documents
+## ドキュメント一覧
 
-| Document | Purpose |
+| ドキュメント | 内容 |
 |---|---|
-| `avd_ops_design.md` | Defines the overall design policy for AVD operations standardization |
-| `inventory_and_precheck.md` | Defines inventory and pre-check points before operation |
-| `sessionhost_lifecycle.md` | Defines SessionHost deletion, cleanup, and lifecycle operation points |
-| `personal_desktop_assignment.md` | Defines AssignedUser assignment checks and execution policy |
-| `troubleshooting_flow.md` | Defines AVD connection troubleshooting flow |
-| `operation_checklist.md` | Provides a general checklist for AVD operations |
-| `customer_response_template.md` | Provides customer-facing response templates |
+| `avd_ops_design.md` | AVD運用標準化の全体方針 |
+| `inventory_and_precheck.md` | 棚卸しと作業前確認 |
+| `sessionhost_lifecycle.md` | SessionHost削除・整理・関連リソース確認 |
+| `personal_desktop_assignment.md` | AssignedUser割当の確認と実行方針 |
+| `troubleshooting_flow.md` | 接続不可時の切り分け |
+| `operation_checklist.md` | 作業前・作業中・作業後のチェックリスト |
+| `customer_response_template.md` | 顧客・依頼元向け回答テンプレート |
 
-## Related Scripts
+## 関連スクリプト
 
-Public script skeletons are stored under `scripts/avd/`.
+公開用スクリプトは `scripts/avd/` に配置します。
 
-| Script | Purpose |
+| Script | 用途 |
 |---|---|
-| `Export-AvdHostPoolInventory.ps1` | Exports HostPool and SessionHost inventory |
-| `Remove-AvdSessionHostResources.ps1` | Performs DryRun-first SessionHost removal workflow |
-| `Set-AvdPersonalDesktopAssignment.ps1` | Performs DryRun-first Personal Desktop assignment workflow |
-| `Start-AzVmFromCsv.ps1` | Starts VMs from CSV with pre-check and result output |
+| `Export-AvdHostPoolInventory.ps1` | HostPoolとSessionHostの棚卸し |
+| `Remove-AvdSessionHostResources.ps1` | SessionHost削除と関連リソース確認 |
+| `Set-AvdPersonalDesktopAssignment.ps1` | Personal DesktopのAssignedUser割当 |
+| `Start-AzVmFromCsv.ps1` | CSV指定VMの状態確認と起動 |
 
-## Design Policy
+## 設計方針
 
-The AVD operational standardization follows these principles.
+- 作業対象をCSVまたはパラメータで明確にする
+- 実行前に状態を確認する
+- 破壊的操作はDryRunを先に行う
+- Active sessionなど利用者影響を確認する
+- スキップ理由を記録する
+- 結果をCSVまたはログとして残す
+- スクリプトは承認フローや変更管理を代替しない
 
-- Clarify operation targets by CSV or parameters
-- Run pre-checks before changes
-- Use DryRun before execution
-- Record skip reasons
-- Output results for evidence
-- Do not include customer-specific values
-- Do not treat scripts as a replacement for approval or change management
+## レビュー観点
 
-## Review Points
-
-When reviewing this section, check whether the following points are clear.
-
-- Operation targets and prerequisites are explicit
-- User impact is considered before execution
-- DryRun and execution modes are separated
-- Result output can be used as evidence
-- Customer responses separate confirmed facts from assumptions
+- 作業対象と前提条件が明確か
+- 利用者影響を確認できるか
+- DryRunと実行モードが分離されているか
+- 実行結果をEvidenceとして残せるか
+- 顧客回答で、確認済み事実と未確認範囲を分けているか
