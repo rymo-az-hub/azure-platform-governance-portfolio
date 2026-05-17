@@ -8,7 +8,7 @@ AVDは本リポジトリの主テーマではありません。Azure Governance 
 
 ここで扱うのは、AVD全体アーキテクチャの設計や、本番環境の正式手順そのものではありません。
 
-日常運用で発生しやすい作業について、作業対象の明確化、事前確認、DryRun、結果出力、スキップ理由、接続不可時の切り分け、顧客回答の考え方を整理します。
+日常運用で発生しやすい作業について、作業対象の明確化、事前確認、DryRun、実行結果、スキップ理由、残存確認、接続不可時の切り分け、顧客回答の考え方を整理します。
 
 ## ドキュメント一覧
 
@@ -16,7 +16,7 @@ AVDは本リポジトリの主テーマではありません。Azure Governance 
 |---|---|
 | `avd_ops_design.md` | AVD運用標準化の全体方針 |
 | `inventory_and_precheck.md` | 棚卸しと作業前確認 |
-| `sessionhost_lifecycle.md` | SessionHost削除・整理・関連リソース確認 |
+| `sessionhost_lifecycle.md` | SessionHost、VM、NIC、Managed Diskの段階削除と残存確認 |
 | `personal_desktop_assignment.md` | AssignedUser割当作業における確認観点 |
 | `troubleshooting_flow.md` | 接続不可時の切り分け |
 | `operation_checklist.md` | 作業前・作業中・作業後のチェックリスト |
@@ -29,18 +29,40 @@ AVDは本リポジトリの主テーマではありません。Azure Governance 
 | Script | 用途 |
 |---|---|
 | `Export-AvdHostPoolInventory.ps1` | HostPoolとSessionHostの棚卸し |
-| `Remove-AvdSessionHostResources.ps1` | SessionHost削除前の確認、DryRun、関連リソース確認 |
+| `Remove-AvdSessionHostResources.ps1` | SessionHost、VM、NIC、Managed Diskの段階削除と残存確認 |
 | `Set-AvdPersonalDesktopAssignment.ps1` | Personal Desktop割当作業における事前確認、DryRun、結果記録の例 |
 | `Start-AzVmFromCsv.ps1` | CSV指定VMの状態確認と起動 |
+
+## Remove-AvdSessionHostResources.ps1 の概要
+
+`Remove-AvdSessionHostResources.ps1` は、AVD SessionHost削除時に発生しやすい関連リソースの残存を防ぐための公開用サンプルです。
+
+主な流れは以下です。
+
+1. CSVで対象VMを指定する
+2. HostPool上のSessionHostを特定する
+3. Active sessionがある対象はスキップする
+4. 非Active sessionをサインアウトし、セッション残存を再確認する
+5. SessionHostを削除する
+6. Azure VMを削除する
+7. VM削除完了をポーリング確認する
+8. VMに紐づいていたNICとManaged Diskを削除する
+9. SessionHost / VM / NIC / Diskの残存確認を行う
+10. ログとSummaryを出力する
+
+このスクリプトは、削除対象として承認済みのAVD SessionHost用VMを前提にします。業務データを保持するData Disk、Backup、Lock、保護対象リソースがある場合は、事前確認と承認なしに削除しません。
 
 ## 設計方針
 
 - 作業対象をCSVまたはパラメータで明確にする
 - 実行前に状態を確認する
 - 破壊的操作はDryRunを先に行う
-- Active sessionなど利用者影響を確認する
+- `-Execute` を明示しない限り変更しない
+- Active sessionがある対象はスキップする
+- 非Active sessionの処理後に再確認する
+- VM削除完了を確認してからNIC / Disk削除へ進む
 - スキップ理由を記録する
-- 結果をCSVまたはログとして残す
+- 結果をログとして残す
 - スクリプトは承認フローや変更管理を代替しない
 
 ## 注意点
@@ -55,4 +77,5 @@ AVDは本リポジトリの主テーマではありません。Azure Governance 
 - 利用者影響を確認できるか
 - DryRunと実行モードが分離されているか
 - 実行結果をEvidenceとして残せるか
+- 関連リソースの残存確認ができるか
 - 顧客回答で、確認済み事実と未確認範囲を分けているか
