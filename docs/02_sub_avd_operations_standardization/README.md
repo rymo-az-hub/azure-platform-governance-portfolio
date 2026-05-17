@@ -2,36 +2,55 @@
 
 This directory contains operational standardization examples for Azure Virtual Desktop.
 
-The AVD content is positioned as a secondary theme. It shows how operational tasks can be standardized through pre-checks, runbooks, scripts, and evidence.
-
-## Design Areas
-
-- AVD operations design
-- Inventory and pre-check
-- Session host lifecycle operation
-- Personal Desktop assignment
-- Troubleshooting flow
-- Operation checklist
-- Customer response template
+The AVD content is a secondary theme. It shows how CloudOps practices can be applied to real operational tasks such as inventory, pre-check, dry run, execution, result output, troubleshooting, and customer communication.
 
 ## Positioning
 
-This section is not intended to present AVD operation as the main scope of the repository.
+This section is not intended to present AVD architecture as the main scope of the repository.
 
-It is an applied CloudOps example that demonstrates how practical operations can be made safer, more repeatable, and easier to review.
+It is an applied example of the Azure Governance Baseline. The goal is to show how operational tasks can be made safer, more repeatable, and easier to review.
 
-## Planned Documents
+## Documents
 
-```text
-avd_ops_design.md
-inventory_and_precheck.md
-sessionhost_lifecycle.md
-personal_desktop_assignment.md
-troubleshooting_flow.md
-operation_checklist.md
-customer_response_template.md
-```
+| Document | Purpose |
+|---|---|
+| `avd_ops_design.md` | Defines the overall design policy for AVD operations standardization |
+| `inventory_and_precheck.md` | Defines inventory and pre-check points before operation |
+| `sessionhost_lifecycle.md` | Defines SessionHost deletion, cleanup, and lifecycle operation points |
+| `personal_desktop_assignment.md` | Defines AssignedUser assignment checks and execution policy |
+| `troubleshooting_flow.md` | Defines AVD connection troubleshooting flow |
+| `operation_checklist.md` | Provides a general checklist for AVD operations |
+| `customer_response_template.md` | Provides customer-facing response templates |
 
-## Review Point
+## Related Scripts
 
-The main review point is whether operational tasks are designed with clear input, pre-check, dry run, execution, result output, and evidence handling.
+Public script skeletons are stored under `scripts/avd/`.
+
+| Script | Purpose |
+|---|---|
+| `Export-AvdHostPoolInventory.ps1` | Exports HostPool and SessionHost inventory |
+| `Remove-AvdSessionHostResources.ps1` | Performs DryRun-first SessionHost removal workflow |
+| `Set-AvdPersonalDesktopAssignment.ps1` | Performs DryRun-first Personal Desktop assignment workflow |
+| `Start-AzVmFromCsv.ps1` | Starts VMs from CSV with pre-check and result output |
+
+## Design Policy
+
+The AVD operational standardization follows these principles.
+
+- Clarify operation targets by CSV or parameters
+- Run pre-checks before changes
+- Use DryRun before execution
+- Record skip reasons
+- Output results for evidence
+- Do not include customer-specific values
+- Do not treat scripts as a replacement for approval or change management
+
+## Review Points
+
+When reviewing this section, check whether the following points are clear.
+
+- Operation targets and prerequisites are explicit
+- User impact is considered before execution
+- DryRun and execution modes are separated
+- Result output can be used as evidence
+- Customer responses separate confirmed facts from assumptions
