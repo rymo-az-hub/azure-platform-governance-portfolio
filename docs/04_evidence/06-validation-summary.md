@@ -50,6 +50,7 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | Policy Assignment | OK | `apg-sandbox-*` 7件を削除済み |
 | Policy Definition | OK | `apg-sandbox-*` 3件を削除済み |
 | 残存確認 | OK | 対象Resource Group / Policy Assignment / Policy Definitionは表示なし |
+| 実行用アカウントの後片付け | OK | `04-rbac-validation-result.md` に記録 |
 
 ## 6. 既知の制約
 
@@ -68,10 +69,12 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 |---|---|
 | Baselineを受け入れるか | 受け入れ可 |
 | 必要な修正 | 初期PoCとしては必須修正なし |
-| 次の対応 | EvidenceとREADMEの整合確認、必要に応じてPoC手順を補足 |
+| 次の対応 | READMEとEvidenceの整合確認、必要に応じてPoC手順を補足 |
 
 ## 8. メモ
 
-PoCはOwner常用ではなく、PoC用ユーザーにContributorとResource Policy Contributorを付与して実行しました。
+PoCはOwner常用ではなく、PoC用の実行アカウントにContributorとResource Policy Contributorを付与して実行しました。
 
 初期PoCでは、Subscriptionスコープで軽量なGovernance Baselineを作成し、What-If、Deploy、Validate、Teardownまで確認できました。
+
+検証後、実行アカウントの後片付けも確認済みです。
