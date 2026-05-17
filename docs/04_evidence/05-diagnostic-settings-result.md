@@ -2,67 +2,56 @@
 
 ## 1. 目的
 
-この文書では、Log Analytics WorkspaceとDiagnostic Settingsの確認結果を記録します。
-
-ログ出力先が作成されているか、対象リソースのDiagnostic Settingsが想定どおりかを確認します。
+Log Analytics WorkspaceとDiagnostic Settingsの確認結果を記録します。
 
 ## 2. 実行情報
 
 | 項目 | 内容 |
 |---|---|
-| 実行日 | YYYY-MM-DD |
-| 実行者 | `<operator>` |
+| 実行日 | 2026-05-17 |
+| 実行者 | `<poc-deployer-user>` |
 | 対象Subscription | `<subscription-name>` |
-| 対象Resource Group | `<resource-group-name>` |
-| Commit | `<commit-sha>` |
+| 対象Resource Group | `rg-apg-sandbox-monitoring` |
+| Commit | `915181d` |
 
 ## 3. 確認コマンド
 
 ```powershell
-az monitor log-analytics workspace show `
-  --resource-group <resource-group-name> `
-  --workspace-name <workspace-name>
-
-az monitor diagnostic-settings list `
-  --resource <resource-id>
+.\scripts\cli\Test-GovernanceBaseline.ps1 `
+  -Environment "sandbox" `
+  -ResourceNamePrefix "apg"
 ```
 
 ## 4. Log Analytics Workspace確認結果
 
 | 確認項目 | 結果 | 備考 |
 |---|---|---|
-| Workspace名 | 未確認 |  |
-| Resource Group | 未確認 |  |
-| Location | 未確認 |  |
-| SKU | 未確認 |  |
-| Retention | 未確認 |  |
-| Tag | 未確認 |  |
+| Workspace名 | OK | `law-apg-sandbox-monitoring` |
+| Resource Group | OK | `rg-apg-sandbox-monitoring` |
+| Location | OK | `japaneast` |
+| SKU | OK | `PerGB2018` |
+| Retention | OK | 30日 |
+| Tag | OK | 必須Tag付与済み |
 
 ## 5. Diagnostic Settings確認結果
 
 | Resource | Setting | Destination | 結果 | 備考 |
 |---|---|---|---|---|
-| `<resource-name>` | 未確認 | Log Analytics Workspace | 未確認 |  |
+| Log Analytics Workspace | N/A | N/A | 対象外 | 初期PoCではWorkspace作成確認まで |
 
-## 6. 出力抜粋
+## 6. 補足確認
 
-必要に応じて、確認結果をマスクして貼り付けます。
+VNetも想定どおり作成されていることを確認しました。
 
-```text
-<diagnostic settings output>
-```
+| 確認項目 | 結果 | 備考 |
+|---|---|---|
+| VNet名 | OK | `vnet-apg-sandbox-shared` |
+| Address space | OK | `10.10.0.0/16` |
+| Subnet | OK | `snet-shared` |
+| Tag | OK | 必須Tag付与済み |
 
 ## 7. 判断
 
-| 項目 | 内容 |
-|---|---|
-| Log Analytics Workspaceは想定どおりか | 未判断 |
-| Diagnostic Settingsは想定どおりか | 未判断 |
-| 保留事項 |  |
-| 次の対応 |  |
+Log Analytics Workspaceは想定どおり作成されました。
 
-## 8. 注意点
-
-- 実Resource IDや実Subscription IDはそのまま残さない
-- 収集対象ログが過剰でないか確認する
-- 初期PoCでは、必要なログから段階的に確認する
+初期PoCではDiagnostic Settingsの詳細設定までは実装対象外とし、ログ出力先の作成確認までを完了条件とします。
