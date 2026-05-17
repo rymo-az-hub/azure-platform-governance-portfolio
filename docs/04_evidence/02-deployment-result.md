@@ -15,7 +15,7 @@ Azure Governance Baselineのデプロイ結果を記録します。
 | Template | `infra/main.bicep` |
 | Parameter | `infra/parameters/lowcost-demo.bicepparam` |
 | Location | `japaneast` |
-| Commit | `915181d` |
+| Commit | `e4fe2f7` |
 
 ## 3. 実行コマンド
 
