@@ -1,0 +1,3 @@
+HostPoolResourceGroup,HostPoolName,SessionHostName,UserPrincipalName
+rg-avd-sample,hp-avd-sample,avd-host-001.contoso.local,user001@example.com
+rg-avd-sample,hp-avd-sample,avd-host-002.contoso.local,user002@example.com
