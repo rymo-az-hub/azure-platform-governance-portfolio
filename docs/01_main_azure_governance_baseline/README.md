@@ -1,30 +1,30 @@
 # Azure Governance / Policy Baseline
 
-This directory contains the main design documents for the Azure Governance Baseline.
+このディレクトリには、Azure Governance / Policy Baseline の主要設計資料を配置します。
 
-This is the primary scope of the repository. It explains how to introduce a practical minimum baseline for Azure platform control before Azure usage expands further.
+主対象は、中堅規模の組織がAzure利用を広げる前に整えておきたい、Subscription単位の軽量なガバナンス基盤です。
 
-## Positioning
+## 位置づけ
 
-The purpose of this section is not to reproduce a full Enterprise Scale Landing Zone.
+初期PoCでは、Subscriptionスコープを中心に設計・実装します。
 
-The initial target is a lightweight Subscription-level baseline that can be validated with low cost and extended later.
+Management Groupは作成可能な環境であっても、初期PoCの必須要素にはしません。複数Subscriptionへ同じ統制を展開する段階で、Management GroupスコープのPolicy Assignmentや階層設計を検討します。
 
-## Documents
+## ドキュメント一覧
 
-| Document | Purpose |
+| ドキュメント | 内容 |
 |---|---|
-| `requirements.md` | Defines the assumed customer, current issues, requirements, constraints, and acceptance criteria |
-| `governance_design.md` | Explains the overall governance design and control areas |
-| `policy_baseline.md` | Defines the initial Azure Policy baseline and Audit-first approach |
-| `rbac_design.md` | Defines the RBAC model, scope design, and role assignment policy |
-| `tagging_standard.md` | Defines required tags and tag operation policy |
-| `monitoring_logging_design.md` | Defines Log Analytics and Diagnostic Settings design principles |
-| `cost_management_notes.md` | Defines initial cost management and low-cost validation considerations |
-| `exception_operation.md` | Defines how exceptions should be recorded and reviewed |
-| `validation_plan.md` | Defines how the baseline should be validated and recorded as evidence |
+| `requirements.md` | 想定シナリオ、要件、制約、受け入れ条件 |
+| `governance_design.md` | Governance Baseline全体の設計 |
+| `policy_baseline.md` | 初期Policy、適用方針、Audit-firstの考え方 |
+| `rbac_design.md` | RBACモデル、スコープ、権限付与方針 |
+| `tagging_standard.md` | 必須Tagと運用方針 |
+| `monitoring_logging_design.md` | Log AnalyticsとDiagnostic Settingsの考え方 |
+| `cost_management_notes.md` | 低コスト検証と初期コスト管理 |
+| `exception_operation.md` | 例外の記録、期限、承認、見直し |
+| `validation_plan.md` | What-If、Deploy、Validate、Evidenceの確認計画 |
 
-## Recommended Reading Order
+## 推奨確認順
 
 1. `requirements.md`
 2. `governance_design.md`
@@ -36,23 +36,22 @@ The initial target is a lightweight Subscription-level baseline that can be vali
 8. `exception_operation.md`
 9. `validation_plan.md`
 
-## Design Policy
+## 設計方針
 
-The baseline follows these principles.
+このBaselineでは、以下を重視します。
 
-- Start with a small and practical scope
-- Prefer Audit before Deny
-- Assign permissions by group and scope
-- Apply tags at creation time
-- Record validation results as evidence
-- Keep exception handling explicit
-- Avoid committing environment-specific identifiers
+- 小さく始めて、後から拡張できること
+- PolicyはAudit中心から始めること
+- RBACは最小権限とスコープ分離を基本にすること
+- Tag、Log、Costを後付けにしないこと
+- 例外を理由、期限、承認つきで扱うこと
+- What-If、Deploy、Validateの結果をEvidenceとして残すこと
 
-## Review Points
+## レビュー観点
 
-When reviewing this section, check whether the following points are clear.
+このディレクトリでは、次の点を確認します。
 
-- The baseline is practical for a mid-sized organization
-- Governance controls are not over-engineered
-- Policy, RBAC, Tag, Log, Cost, Exception, and Evidence are connected
-- Operational acceptance is considered, not only resource deployment
+- 統制内容が過剰ではなく、初期導入しやすいか
+- Policy、RBAC、Tag、Log、Cost、例外、Evidenceがつながっているか
+- IaCやRunbookへ落とし込める粒度になっているか
+- 運用担当者が後から確認できる構成になっているか
