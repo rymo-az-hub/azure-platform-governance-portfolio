@@ -16,7 +16,7 @@ Azure Governance Baselineのデプロイ前に実行したWhat-If結果を記録
 | Template | `infra/main.bicep` |
 | Parameter | `infra/parameters/lowcost-demo.bicepparam` |
 | Location | `japaneast` |
-| Commit | `e4fe2f7` |
+| Baseline | Public review baseline |
 
 ## 3. 実行コマンド
 
@@ -26,7 +26,23 @@ Azure Governance Baselineのデプロイ前に実行したWhat-If結果を記録
   -ParameterFile ".\infra\parameters\lowcost-demo.bicepparam"
 ```
 
-## 4. 確認結果
+## 4. サニタイズ済み出力抜粋
+
+以下は公開用にSubscription IDなどをマスクした抜粋です。
+
+~~~text
+Resource and property changes are indicated with these symbols:
+  + Create
+
+The deployment will create the following resources:
+  + Microsoft.Resources/resourceGroups/rg-apg-sandbox-monitoring
+  + Microsoft.Resources/resourceGroups/rg-apg-sandbox-network
+  + Microsoft.Resources/resourceGroups/rg-apg-sandbox-workload-sample
+  + Microsoft.Authorization/policyDefinitions/apg-sandbox-require-tag
+  + Microsoft.Authorization/policyAssignments/apg-sandbox-require-environment
+~~~
+
+## 5. 確認結果
 
 | 確認項目 | 結果 | 備考 |
 |---|---|---|

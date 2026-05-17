@@ -12,7 +12,7 @@ Azure Policy AssignmentとPolicy stateの確認結果を記録します。
 | 実行者 | `<poc-deployer-user>` |
 | 対象Subscription | `<subscription-name>` |
 | 対象Scope | `/subscriptions/<subscription-id>` |
-| Commit | `e4fe2f7` |
+| Baseline | Public review baseline |
 
 ## 3. 確認コマンド
 
@@ -32,7 +32,21 @@ az policy state list `
   --output table
 ```
 
-## 4. Policy Assignment確認結果
+## 4. サニタイズ済み出力抜粋
+
+以下は公開用にSubscription IDをマスクしたPolicy Assignment確認結果の抜粋です。
+
+~~~text
+Name                             DisplayName                Scope
+-------------------------------  -------------------------  --------------------------------
+apg-sandbox-require-environment  Require tag: Environment   /subscriptions/<subscription-id>
+apg-sandbox-require-owner        Require tag: Owner         /subscriptions/<subscription-id>
+apg-sandbox-require-costcenter   Require tag: CostCenter    /subscriptions/<subscription-id>
+apg-sandbox-allowed-locations    Allowed locations          /subscriptions/<subscription-id>
+apg-sandbox-audit-public-ip      Audit Public IP resources  /subscriptions/<subscription-id>
+~~~
+
+## 5. Policy Assignment確認結果
 
 | Policy | 期待する効果 | 結果 | 備考 |
 |---|---|---|---|
@@ -44,7 +58,7 @@ az policy state list `
 | Allowed locations | Audit | OK | `apg-sandbox-allowed-locations` |
 | Audit Public IP resources | Audit | OK | `apg-sandbox-audit-public-ip` |
 
-## 5. Policy Definition確認結果
+## 6. Policy Definition確認結果
 
 | Policy Definition | 種別 | Mode | 結果 |
 |---|---|---|---|
@@ -52,7 +66,7 @@ az policy state list `
 | `apg-sandbox-allowed-locations` | Custom | Indexed | OK |
 | `apg-sandbox-audit-public-ip` | Custom | Indexed | OK |
 
-## 6. Policy state確認結果
+## 7. Policy state確認結果
 
 PoCで作成した主要リソースに絞ってPolicy stateを確認しました。
 
@@ -63,7 +77,7 @@ PoCで作成した主要リソースに絞ってPolicy stateを確認しまし�
 
 SubscriptionスコープのPolicy Assignmentであるため、既存リソースも評価対象になります。既存リソースではTag不足によるNonCompliantも検出されましたが、初期PoCではAuditにより既存運用を止めずに逸脱を可視化することを目的としています。
 
-## 7. 判断
+## 8. 判断
 
 Policy Assignmentは想定どおりSubscriptionスコープに作成されました。
 

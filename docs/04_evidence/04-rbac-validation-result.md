@@ -12,7 +12,7 @@ RBAC Assignmentの確認結果を記録します。
 | 実行者 | `<poc-deployer-user>` |
 | 対象Subscription | `<subscription-name>` |
 | 対象Scope | `/subscriptions/<subscription-id>` |
-| Commit | `e4fe2f7` |
+| Baseline | Public review baseline |
 
 ## 3. 確認コマンド
 

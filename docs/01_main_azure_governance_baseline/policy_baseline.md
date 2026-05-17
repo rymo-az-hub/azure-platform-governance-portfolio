@@ -173,3 +173,19 @@ az policy state list --subscription <subscription-id>
 Policy Baselineでは、Azure利用が広がる前に最低限確認すべきルールを定義します。
 
 初期PoCではAuditを中心に現状を見える化し、影響範囲と例外運用を確認したうえでDenyやDeployIfNotExistsへ段階的に移行します。
+
+## Resource Groupタグの扱い
+
+現行PoCのRequired Tag Policyは、`mode: Indexed` を前提にしたリソース向けのタグ確認を対象にします。
+
+Resource Groupについては、Bicepデプロイ時にタグを付与し、`Test-GovernanceBaseline.ps1` でタグ状態を確認します。つまり、初期PoCではResource GroupタグをAzure Policyで強制しているのではなく、デプロイ結果とValidateで確認する扱いです。
+
+Resource Group自体のタグをPolicyで厳密に統制する場合は、`mode: All` を使い、対象Resource TypeをResource Groupに絞ったPolicy定義を別途追加する想定です。
+
+この切り分けにより、初期PoCでは以下の範囲に整理します。
+
+| 対象 | 現行PoCでの扱い |
+|---|---|
+| AzureリソースのRequired Tag | Custom PolicyでAudit |
+| Resource Groupのタグ | Bicepで付与しValidateで確認 |
+| Resource GroupタグのPolicy強制 | 将来拡張 |

@@ -40,6 +40,15 @@ Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cos
 
 初期PoCは完了済みです。
 
+このリポジトリでは、実装済み、文書化済み、Validateで確認している範囲、将来拡張を明確に分けています。
+
+| 区分 | 内容 |
+|---|---|
+| 実装・検証済み | SubscriptionスコープBicep、Resource Group、Log Analytics Workspace、VNet、Custom Policy Definition、Policy Assignment、What-If、Deploy、Validate、Policy state確認、Teardown、Teardown後残存確認 |
+| 文書化・設計済み | RBAC設計、Tag標準、Cost管理、例外運用、Monitoring方針、Evidence方針、AVD運用標準化 |
+| Validateで確認 | Resource Groupタグ、主要リソースタグ、Log Analytics Workspace、VNet、Policy Assignment、現在サインイン中PoCユーザーのRole Assignment |
+| 将来拡張 | Management Group展開、Policy Initiative、Policy Exemption、Resource GroupタグPolicy強制、Diagnostic Settings詳細適用、Activity Log export、Budget、GitHub Actions |
+
 確認済みの内容は以下です。
 
 | 項目 | 状態 |
@@ -67,6 +76,8 @@ PoCでは、Owner常用ではなく、検証用の実行アカウントに必要
 | 今後拡張 | Management Group展開、Policy Initiative、Policy Exemption、Diagnostic Settings本格実装、Budget、GitHub Actions |
 
 初期PoCでは、Azure Governance Baselineの流れを小さく検証することを優先しています。そのため、すべての領域を本番運用レベルまで実装しているわけではありません。
+
+なお、Required Tag Policyは主にAzureリソース向けのAuditを対象にしています。Resource Groupタグは、Bicepで付与しValidateで確認します。Resource Group自体をAzure Policyで厳密に統制する場合は、`mode: All` を使った別Policyを将来拡張として扱います。
 
 ## 想定シナリオ
 

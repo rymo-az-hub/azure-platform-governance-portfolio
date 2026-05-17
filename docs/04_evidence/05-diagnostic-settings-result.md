@@ -2,9 +2,11 @@
 
 ## 1. 目的
 
-Log Analytics WorkspaceとVNetの作成結果を確認し、初期PoCにおける監視基盤の入口が用意できていることを記録します。
+Log Analytics WorkspaceとVNetの作成結果を確認し、初期PoCにおける監視・ログ基盤の確認結果を記録します。
 
-このEvidenceは、Diagnostic Settingsの詳細実装結果ではありません。初期PoCでは、ログ出力先となるLog Analytics Workspaceの作成確認までを対象とします。
+このEvidenceは、Diagnostic Settings本格実装の結果ではありません。現行PoCでは、Log Analytics Workspaceを共通ログ出力先として作成し、監視・ログ基盤の土台を確認する範囲に留めています。
+
+Diagnostic Settingsの詳細適用、Activity Log export、各リソースのDiagnostic Settings展開は将来拡張として扱います。
 
 ## 2. 実行情報
 
@@ -14,7 +16,7 @@ Log Analytics WorkspaceとVNetの作成結果を確認し、初期PoCにおけ�
 | 実行者 | `<poc-deployer-user>` |
 | 対象Subscription | `<subscription-name>` |
 | 対象Resource Group | `rg-apg-sandbox-monitoring` |
-| Commit | `e4fe2f7` |
+| Baseline | Public review baseline |
 
 ## 3. 確認コマンド
 

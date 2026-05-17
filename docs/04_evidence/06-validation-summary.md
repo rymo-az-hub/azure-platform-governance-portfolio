@@ -14,9 +14,15 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | 実行者 | `<poc-deployer-user>` |
 | 対象Subscription | `<subscription-name>` |
 | Parameter | `infra/parameters/lowcost-demo.bicepparam` |
-| Commit | `e4fe2f7` |
+| Baseline | Public review baseline |
 
-## 3. 検証サマリー
+## 3. Evidenceの扱い
+
+このValidation Summaryは、公開レビュー用に実行結果をマスク・整理したサマリです。
+
+Baseline は、特定の旧commit IDではなく、公開用に整理した現行mainブランチ相当の検証ベースラインを示します。実Tenant ID、Subscription ID、Principal ID、UPN、顧客固有値は公開しません。
+
+## 4. 検証サマリー
 
 | 領域 | 結果 | Evidence |
 |---|---|---|
@@ -29,7 +35,27 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | Teardown | OK | 本文書に記録 |
 | 実行用アカウント後片付け | OK | `04-rbac-validation-result.md` |
 
-## 4. 受け入れ条件
+## 5. サニタイズ済み検証出力抜粋
+
+以下は公開用にSubscription ID、Tenant ID、UPNをマスクした検証出力の抜粋です。
+
+~~~text
+Current Azure account
+Subscription          SubscriptionId       TenantId       User
+--------------------  -------------------  -------------  ----------------
+<subscription-name>   <subscription-id>    <tenant-id>    <signed-in-user>
+
+Resource groups
+Name                            Location
+------------------------------  ----------
+rg-apg-sandbox-monitoring       japaneast
+rg-apg-sandbox-network          japaneast
+rg-apg-sandbox-workload-sample  japaneast
+
+Cleanup validation succeeded. No teardown targets remain.
+~~~
+
+## 6. 受け入れ条件
 
 | 確認項目 | 結果 | 備考 |
 |---|---|---|
@@ -45,7 +71,7 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | 検証後に実行用アカウントを削除できる | OK | User / Role Assignment ともに残存なし |
 | Evidenceに機密情報が残っていない | OK | Subscription ID / Tenant ID / UPN等はマスク |
 
-## 5. Teardown結果
+## 7. Teardown結果
 
 以下を削除対象として確認し、削除を実行しました。
 
@@ -57,18 +83,18 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | 残存確認 | OK | 対象Resource Group / Policy Assignment / Policy Definitionは表示なし |
 | 実行用アカウントの後片付け | OK | User / Role Assignment ともに残存なし |
 
-## 6. 既知の制約
+## 8. 既知の制約
 
 | 領域 | 制約 |
 |---|---|
 | Management Group | 初期PoCでは必須にしない。将来拡張候補として扱う |
-| Diagnostic Settings | 初期PoCではLog Analytics Workspace作成確認まで |
+| Monitoring baseline | 初期PoCではLog Analytics Workspace / VNetの作成確認まで。Diagnostic Settings詳細適用は将来拡張 |
 | Alert | 詳細なAlert設計は対象外 |
 | Sentinel | 初期PoCでは対象外 |
 | PIM | 詳細設計は対象外 |
 | 本番運用 | 初期PoCは検証環境を前提とする |
 
-## 7. 判断
+## 9. 判断
 
 | 項目 | 内容 |
 |---|---|
@@ -76,7 +102,7 @@ Azure Governance BaselineのPoC検証結果をまとめます。
 | 必要な修正 | 初期PoCとしては必須修正なし |
 | 次の対応 | READMEとEvidenceの最終整合確認 |
 
-## 8. メモ
+## 10. メモ
 
 PoCはOwner常用ではなく、PoC用の実行アカウントにContributorとResource Policy Contributorを付与して実行しました。
 
