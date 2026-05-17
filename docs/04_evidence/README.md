@@ -4,6 +4,8 @@
 
 Evidenceは、コマンド出力をそのまま貼る場所ではありません。何を確認し、どの結果になり、未確認項目が何かを後から追えるように整理して残します。
 
+公開用Evidenceでは、実Tenant ID、Subscription ID、Principal ID、UPNなどはマスクします。
+
 ## ファイル一覧
 
 | ファイル | 内容 |
@@ -12,7 +14,7 @@ Evidenceは、コマンド出力をそのまま貼る場所ではありません
 | `02-deployment-result.md` | デプロイ結果と主要リソース確認 |
 | `03-policy-assignment-result.md` | Azure Policy Assignment確認 |
 | `04-rbac-validation-result.md` | RBAC Assignment確認 |
-| `05-diagnostic-settings-result.md` | Log Analytics Workspace / Diagnostic Settings確認 |
+| `05-diagnostic-settings-result.md` | Log Analytics Workspace / VNetの確認。Diagnostic Settings詳細実装は今後拡張 |
 | `06-validation-summary.md` | 検証結果のまとめ |
 
 ## 記録方針
