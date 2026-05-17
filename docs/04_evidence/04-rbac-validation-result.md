@@ -2,61 +2,45 @@
 
 ## 1. 目的
 
-この文書では、RBAC Assignmentの確認結果を記録します。
-
-想定したPrincipalに、想定したRoleが、想定したScopeで付与されているかを確認します。
+RBAC Assignmentの確認結果を記録します。
 
 ## 2. 実行情報
 
 | 項目 | 内容 |
 |---|---|
-| 実行日 | YYYY-MM-DD |
-| 実行者 | `<operator>` |
+| 実行日 | 2026-05-17 |
+| 実行者 | `<poc-deployer-user>` |
 | 対象Subscription | `<subscription-name>` |
-| 対象Scope | `<scope>` |
-| Commit | `<commit-sha>` |
+| 対象Scope | `/subscriptions/<subscription-id>` |
+| Commit | `915181d` |
 
 ## 3. 確認コマンド
 
 ```powershell
-az role assignment list --scope <scope> --output table
-az role assignment list --assignee <principal-id> --all --output table
+.\scripts\cli\Test-GovernanceBaseline.ps1 `
+  -Environment "sandbox" `
+  -ResourceNamePrefix "apg"
 ```
 
 ## 4. RBAC確認結果
 
 | Principal | Role | Scope | 結果 | 備考 |
 |---|---|---|---|---|
-| `<principal>` | Reader | Subscription | 未確認 | 初期版では無効化されている場合あり |
+| `<poc-deployer-user>` | Contributor | Subscription | OK | PoC実行用に事前付与 |
+| `<poc-deployer-user>` | Resource Policy Contributor | Subscription | OK | Policy Definition / Assignment作成用に事前付与 |
+| BicepによるRBAC Assignment | なし | なし | OK | `enableRbacAssignments = false` |
 
 ## 5. レビュー観点
 
 | 確認項目 | 結果 | 備考 |
 |---|---|---|
-| 不要なOwner Assignmentがないか | 未確認 |  |
-| 不要なContributor Assignmentがないか | 未確認 |  |
-| グループ単位で付与されているか | 未確認 |  |
-| Scopeが広すぎないか | 未確認 |  |
-| 一時権限が残っていないか | 未確認 |  |
+| Owner権限でPoCを実行していないか | OK | PoC用ユーザーで実行 |
+| Bicepで不要なRBAC Assignmentを作成していないか | OK | 作成なし |
+| 事前付与ロールがPoC用途に限定されているか | OK | Contributor / Resource Policy Contributor |
+| 実Principal IDやUPNをEvidenceへ残していないか | OK | マスク値で記録 |
 
-## 6. 出力抜粋
+## 6. 判断
 
-必要に応じて、RBAC確認結果をマスクして貼り付けます。
+PoCはOwner常用ではなく、PoC用ユーザーに必要なロールを付与して実行しました。
 
-```text
-<rbac output>
-```
-
-## 7. 判断
-
-| 項目 | 内容 |
-|---|---|
-| RBAC Assignmentは想定どおりか | 未判断 |
-| 保留事項 |  |
-| 次の対応 |  |
-
-## 8. 注意点
-
-- 実Principal ID、Object ID、UPNはそのまま残さない
-- Subscription全体のOwner / Contributorは特に確認する
-- 初期PoCでRBAC Assignmentを無効化している場合は、その理由を記録する
+初期PoCではBicepによるRBAC Assignmentを無効化しているため、新規のRole Assignmentは作成していません。
