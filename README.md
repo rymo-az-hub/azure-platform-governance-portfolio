@@ -4,6 +4,15 @@
 
 Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cost、例外運用、Evidenceをどう管理するかを整理します。AVD運用標準化は、CloudOpsの考え方を実運用へ落としたサブテーマとして扱います。
 
+## 関連ポートフォリオ
+
+このリポジトリは、Azure基盤の統制・標準化を主題にしたポートフォリオです。Microsoft 365、Microsoft Entra ID、Microsoft Intune、Azure Virtual Desktop、AD DS、Microsoft Entra Cloud Syncを横断したCloudOps / Hybrid Identity寄りの検証は、以下の別リポジトリで扱っています。
+
+| テーマ | リポジトリ | 主な観点 |
+|---|---|---|
+| Azure Governance / Policy Baseline | このリポジトリ | Azure Policy、RBAC、Tag、Log、Cost、例外運用、Evidence、Bicep |
+| Microsoft 365 / AVD / AD DS / Cloud Sync | [m365-avd-ad-cloudsync-portfolio](https://github.com/rymo-az-hub/m365-avd-ad-cloudsync-portfolio) | Entra ID、Intune、AVD、AD DS、Cloud Sync、PHS、CloudOps Runbook |
+
 ## 現在の状態
 
 初期PoCは完了済みです。
