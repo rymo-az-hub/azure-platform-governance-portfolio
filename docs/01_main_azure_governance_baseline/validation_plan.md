@@ -164,7 +164,7 @@ az monitor diagnostic-settings list \
 - VNetが作成されているか
 - Diagnostic Settings詳細適用、Activity Log export、Alertは将来拡張として整理されているか
 
-記録先は `docs/04_evidence/05-diagnostic-settings-result.md` です。現行PoCではMonitoring Baseline Resultとして記録します。
+記録先は `docs/04_evidence/05-monitoring-baseline-result.md` です。現行PoCではMonitoring Baseline Resultとして記録します。
 
 ## 10. Validation Summary
 

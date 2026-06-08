@@ -136,7 +136,7 @@ az monitor diagnostic-settings list \
   --resource <resource-id>
 ```
 
-確認結果は、`docs/04_evidence/05-diagnostic-settings-result.md` に記録します。現行PoCではMonitoring Baseline Resultとして、Log Analytics Workspace / VNetの作成確認を中心に扱います。
+確認結果は、`docs/04_evidence/05-monitoring-baseline-result.md` に記録します。現行PoCではMonitoring Baseline Resultとして、Log Analytics Workspace / VNetの作成確認を中心に扱います。
 
 ## 11. 運用時の確認観点
 

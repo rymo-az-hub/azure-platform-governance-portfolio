@@ -1,5 +1,7 @@
 # Azure Platform Governance Portfolio
 
+> Azure基盤統制・Policy Baseline設計実装ポートフォリオ
+
 このリポジトリは、中堅規模の組織を想定した **Azure Governance / Policy Baseline** の設計・実装例です。
 
 Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cost、例外運用、Evidenceをどう管理するかを整理します。AVD運用標準化は、CloudOpsの考え方を実運用へ落としたサブテーマとして扱います。
@@ -28,7 +30,8 @@ Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cos
 |---|---|---|
 | Azure Governance / Policy Baseline | このリポジトリ | Azure Policy、RBAC、Tag、Log、Cost、例外運用、Evidence、Bicep |
 | Microsoft 365 / AVD / AD DS / Cloud Sync | [m365-avd-ad-cloudsync-portfolio](https://github.com/rymo-az-hub/m365-avd-ad-cloudsync-portfolio) | Entra ID、Intune、AVD、AD DS、Cloud Sync、PHS、CloudOps Runbook |
-## 3分で確認する場合
+
+## 短時間での確認順序
 
 短時間で見る場合は、以下の順番を想定しています。
 
@@ -40,7 +43,7 @@ Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cos
 | 4 | [CLI Runbook](scripts/cli/README.md) | What-If、Deploy、Validate、Teardownの流れ |
 | 5 | [Validation Summary](docs/04_evidence/06-validation-summary.md) | 検証結果、Policy state、Teardown、後片付け |
 
-## 15分で確認する場合
+## 詳細確認の順序
 
 設計から実装、Evidenceまで追う場合は、以下の順番が読みやすいです。
 
@@ -66,10 +69,10 @@ Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cos
 
 | 区分 | 内容 |
 |---|---|
-| 実装・検証済み | SubscriptionスコープBicep、Resource Group、Log Analytics Workspace、VNet、Custom Policy Definition、Policy Assignment、What-If、Deploy、Validate、Policy state確認、Teardown、Teardown後残存確認 |
+| 実装・検証済み | SubscriptionスコープBicep、Resource Group、Log Analytics Workspace、VNet、Custom Policy Definition、Policy Assignment、What-If、Deploy、Validate、Policy state確認、Teardown、Teardown後残存確認、publication-check workflowによる公開前検査 |
 | 文書化・設計済み | RBAC設計、Tag標準、Cost管理、例外運用、Monitoring方針、Evidence方針、AVD運用標準化 |
 | Validateで確認 | Resource Groupタグ、主要リソースタグ、Log Analytics Workspace、VNet、Policy Assignment、現在サインイン中PoCユーザーのRole Assignment |
-| 将来拡張 | Management Group展開、Policy Initiative、Policy Exemption、Resource GroupタグPolicy強制、Diagnostic Settings詳細適用、Activity Log export、Budget、GitHub Actions |
+| 将来拡張 | Management Group展開、Policy Initiative、Policy Exemption、Resource GroupタグPolicy強制、Diagnostic Settings詳細適用、Activity Log export、Budget |
 
 確認済みの内容は以下です。
 
@@ -95,7 +98,7 @@ PoCでは、Owner常用ではなく、検証用の実行アカウントに必要
 |---|---|
 | PoC実装済み | SubscriptionスコープBicep、Resource Group、Log Analytics Workspace、VNet、Custom Policy Definition、Policy Assignment、What-If、Deploy、Validate、Policy state確認、Teardown |
 | 設計・文書化済み | RBAC設計、Tag標準、Cost管理方針、例外運用、Monitoring方針、AVD運用標準化、ADR、Evidence方針 |
-| 今後拡張 | Management Group展開、Policy Initiative、Policy Exemption、Diagnostic Settings本格実装、Budget、GitHub Actions |
+| 今後拡張 | Management Group展開、Policy Initiative、Policy Exemption、Diagnostic Settings本格実装、Budget |
 
 初期PoCでは、Azure Governance Baselineの流れを小さく検証することを優先しています。そのため、すべての領域を本番運用レベルまで実装しているわけではありません。
 
@@ -126,6 +129,8 @@ Azure利用を広げる前に、Subscription単位で最低限の統制を整え
 AVD運用標準化は、Azure基盤運用の実務適用例として配置しています。
 
 ここではAVD全体設計や本番手順そのものではなく、棚卸し、事前確認、DryRun、結果出力、関連リソースの残存確認、接続不可時の切り分け、顧客回答の考え方を整理しています。
+
+scripts/avd/samples/配下の*.sample.csvは、実環境値を含まない公開用のダミーデータです。
 
 特に `Remove-AvdSessionHostResources.ps1` では、AVD SessionHost、Azure VM、NIC、Managed Diskを段階的に扱うRunbook例を示しています。Active sessionがある対象はスキップし、非Active sessionの整理、VM削除完了確認、関連リソース削除、最終残存確認までを扱います。
 

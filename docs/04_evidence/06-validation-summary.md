@@ -33,7 +33,7 @@ Baseline は、特定の旧commit IDではなく、公開用に整理した現�
 | Policy Assignment | OK | `03-policy-assignment-result.md` |
 | Policy state | OK | `03-policy-assignment-result.md` |
 | RBAC | OK | `04-rbac-validation-result.md` |
-| Log Analytics / VNet | OK | `05-diagnostic-settings-result.md` |
+| Log Analytics / VNet | OK | `05-monitoring-baseline-result.md` |
 | Teardown | OK | 本文書に記録 |
 | 実行用アカウント後片付け | OK | `04-rbac-validation-result.md` |
 
