@@ -14,7 +14,7 @@ Evidenceは、コマンド出力をそのまま貼る場所ではありません
 | `02-deployment-result.md` | デプロイ結果と主要リソース確認 |
 | `03-policy-assignment-result.md` | Azure Policy Assignment確認 |
 | `04-rbac-validation-result.md` | RBAC Assignment確認 |
-| `05-diagnostic-settings-result.md` | Log Analytics Workspace / VNetの確認。Diagnostic Settings詳細適用は将来拡張 |
+| `05-monitoring-baseline-result.md` | Log Analytics Workspace / VNetの確認。Diagnostic Settings詳細適用は将来拡張 |
 | `06-validation-summary.md` | 検証結果のまとめ |
 
 ## 記録方針
@@ -75,7 +75,7 @@ Evidenceでは、以下を明確にします。
 | Deploy | `docs/01_main_azure_governance_baseline/validation_plan.md` | `scripts/cli/Invoke-Deploy.ps1` | `02-deployment-result.md` |
 | Policy | `docs/01_main_azure_governance_baseline/policy_baseline.md` | `scripts/cli/Test-GovernanceBaseline.ps1` | `03-policy-assignment-result.md` |
 | RBAC | `docs/01_main_azure_governance_baseline/rbac_design.md` | `scripts/cli/Test-GovernanceBaseline.ps1` | `04-rbac-validation-result.md` |
-| Monitoring Baseline | `docs/01_main_azure_governance_baseline/monitoring_logging_design.md` | `scripts/cli/Test-GovernanceBaseline.ps1` | `05-diagnostic-settings-result.md` |
+| Monitoring Baseline | `docs/01_main_azure_governance_baseline/monitoring_logging_design.md` | `scripts/cli/Test-GovernanceBaseline.ps1` | `05-monitoring-baseline-result.md` |
 | Validation Summary | `docs/01_main_azure_governance_baseline/validation_plan.md` | `scripts/cli/Test-GovernanceBaseline.ps1` / `scripts/cli/Test-TeardownCleanup.ps1` | `06-validation-summary.md` |
 
 この対応表は、設計、実行手順、Evidenceのつながりを短時間で確認できるようにするためのものです。
