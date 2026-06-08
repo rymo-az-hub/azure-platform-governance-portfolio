@@ -26,6 +26,27 @@ jobs:
             exit 1
           fi
 
+
+      - name: Check sample CSV contents
+        shell: bash
+        run: |
+          set -euo pipefail
+          sample_csv_files=$(git ls-files '*.sample.csv' || true)
+          if [[ -z "$sample_csv_files" ]]; then
+            exit 0
+          fi
+
+          status=0
+          # sample CSV files are allowed, but they must not contain real-looking identifiers.
+          # example.com is allowed as documentation sample domain.
+          disallowed='([0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}|Bearer[[:space:]]+[A-Za-z0-9._-]{20,}=*|[A-Za-z0-9._%+-]+@(?!example\.com)[A-Za-z0-9.-]+\.[A-Za-z]{2,})'
+
+          if grep -nE "$disallowed" $sample_csv_files; then
+            echo "Potential sensitive value found in sample CSV files."
+            status=1
+          fi
+
+          exit $status
       - name: Check high-confidence sensitive patterns
         shell: bash
         run: |
