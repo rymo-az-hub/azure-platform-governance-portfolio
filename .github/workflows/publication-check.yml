@@ -45,8 +45,10 @@ jobs:
 
           # Allowlist:
           # - 10.10.0.0/16 and 10.10.1.0/24 are intentional lab sample CIDR values used in Bicep/docs.
+          # - acdd72a7-3385-48ef-bd42-f606fba81ae7 is a documented Azure built-in role definition ID used as a sample role assignment value.
+          # - example.com addresses are documentation samples, not real user principal names.
           # - *.sample.csv files are already allowed in the blocked-extension check.
-          allowlist='10\.10\.0\.0|10\.10\.1\.0'
+          allowlist='10\.10\.0\.0|10\.10\.1\.0|acdd72a7-3385-48ef-bd42-f606fba81ae7|example\.com'
 
           for name in "${!patterns[@]}"; do
             echo "Checking $name"
