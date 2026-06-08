@@ -43,10 +43,18 @@ jobs:
           patterns[EmailOrUPN]='[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}'
           patterns[BearerToken]='Bearer[[:space:]]+[A-Za-z0-9._-]{20,}=*'
 
+          # Allowlist:
+          # - 10.10.0.0/16 and 10.10.1.0/24 are intentional lab sample CIDR values used in Bicep/docs.
+          # - *.sample.csv files are already allowed in the blocked-extension check.
+          allowlist='10\.10\.0\.0|10\.10\.1\.0'
+
           for name in "${!patterns[@]}"; do
             echo "Checking $name"
-            if grep -nEI "${patterns[$name]}" $files; then
+            matches=$(grep -nEI "${patterns[$name]}" $files | grep -Ev "$allowlist" || true)
+
+            if [[ -n "$matches" ]]; then
               echo "Potential $name found. Review and mask before publishing."
+              echo "$matches"
               status=1
             fi
           done
