@@ -6,6 +6,15 @@ Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cos
 
 このリポジトリは、Azure Landing Zone全体の完全実装ではありません。初期PoCでは、低コストで再現しやすい **Subscription単位のGovernance Baseline** に範囲を絞っています。
 
+
+## 関連ポートフォリオ
+
+このリポジトリは、Azure基盤の統制・標準化を主題にしたポートフォリオです。Microsoft 365、Microsoft Entra ID、Microsoft Intune、Azure Virtual Desktop、AD DS、Microsoft Entra Cloud Sync を横断したCloudOps / Hybrid Identity寄りの検証は、以下の別リポジトリで扱っています。
+
+| テーマ | リポジトリ | 主な観点 |
+|---|---|---|
+| Azure Governance / Policy Baseline | このリポジトリ | Azure Policy、RBAC、Tag、Log、Cost、例外運用、Evidence、Bicep |
+| Microsoft 365 / AVD / AD DS / Cloud Sync | [m365-avd-ad-cloudsync-portfolio](https://github.com/rymo-az-hub/m365-avd-ad-cloudsync-portfolio) | Entra ID、Intune、AVD、AD DS、Cloud Sync、PHS、CloudOps Runbook |
 ## 3分で確認する場合
 
 短時間で見る場合は、以下の順番を想定しています。
