@@ -36,3 +36,33 @@ scripts/avd/output/*.log
 
 # Bicep build outputs
 infra/**/*.json
+# Editor local settings
+.vscode/
+
+# Raw evidence / exports / archives
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.bmp
+*.gif
+*.csv
+*.xlsx
+*.xlsm
+*.docx
+*.pptx
+*.har
+*.evtx
+*.etl
+*.zip
+*.7z
+*.rar
+*.tar
+*.tgz
+*.ndjson
+*.xml
+*.html
+exports/
+transcripts/
+raw-evidence/
+private-evidence/
