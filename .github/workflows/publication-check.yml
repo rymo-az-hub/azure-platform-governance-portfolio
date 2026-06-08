@@ -1,0 +1,54 @@
+name: publication-check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  publication-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check whitespace
+        run: git diff-tree --check --no-commit-id --root -r HEAD
+
+      - name: Check blocked file extensions
+        shell: bash
+        run: |
+          set -euo pipefail
+          blocked='\.(png|jpg|jpeg|webp|bmp|gif|csv|xlsx|xlsm|docx|pptx|log|har|evtx|etl|zip|7z|rar|tar|tgz|clixml|xml|html|ndjson)$'
+          matches=$(git ls-files | grep -Ei "$blocked" | grep -Evi '\.sample\.csv$' || true)
+          if [[ -n "$matches" ]]; then
+            echo "Blocked file extensions detected:"
+            echo "$matches"
+            exit 1
+          fi
+
+      - name: Check high-confidence sensitive patterns
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=$(git ls-files '*.md' '*.ps1' '*.bicep' '*.bicepparam' '*.mmd' '*.txt' '*.yml' '*.yaml' '.gitignore' || true)
+          if [[ -z "$files" ]]; then
+            exit 0
+          fi
+
+          status=0
+          declare -A patterns
+          patterns[GUID]='[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}'
+          patterns[SID]='S-[0-9]-[0-9]+(-[0-9]+){2,}'
+          patterns[IPv4]='\b([0-9]{1,3}\.){3}[0-9]{1,3}\b'
+          patterns[EmailOrUPN]='[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}'
+          patterns[BearerToken]='Bearer[[:space:]]+[A-Za-z0-9._-]{20,}=*'
+
+          for name in "${!patterns[@]}"; do
+            echo "Checking $name"
+            if grep -nEI "${patterns[$name]}" $files; then
+              echo "Potential $name found. Review and mask before publishing."
+              status=1
+            fi
+          done
+
+          exit $status

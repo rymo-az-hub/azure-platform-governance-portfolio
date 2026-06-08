@@ -7,6 +7,19 @@ Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cos
 このリポジトリは、Azure Landing Zone全体の完全実装ではありません。初期PoCでは、低コストで再現しやすい **Subscription単位のGovernance Baseline** に範囲を絞っています。
 
 
+
+## 要約
+
+中堅規模の組織を想定し、Azure利用を広げる前に必要となる最小限の統制基盤を、SubscriptionスコープのPoCとして設計・実装したポートフォリオです。
+
+主な確認範囲は以下です。
+
+- Azure Policy、RBAC、Tag、Log、Cost、例外運用、Evidence方針を整理。
+- Bicep、Azure CLI、PowerShellを使い、What-If、Deploy、Validate、Teardownまで確認。
+- いきなりDenyではなく、Audit firstで統制を始める設計判断を明記。
+- AVD運用標準化をサブテーマとして配置し、CloudOpsの考え方を実運用へ落とし込む例を整理。
+- 実Tenant ID、Subscription ID、Principal ID、UPN、顧客固有値は公開しない方針で証跡を整理。
+
 ## 関連ポートフォリオ
 
 このリポジトリは、Azure基盤の統制・標準化を主題にしたポートフォリオです。Microsoft 365、Microsoft Entra ID、Microsoft Intune、Azure Virtual Desktop、AD DS、Microsoft Entra Cloud Sync を横断したCloudOps / Hybrid Identity寄りの検証は、以下の別リポジトリで扱っています。
