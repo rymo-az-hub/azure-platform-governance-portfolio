@@ -19,7 +19,7 @@
 |---|---|
 | `Set-AzContext.ps1` | Azure CLIログイン状態とSubscriptionを確認・設定する |
 | `Invoke-WhatIf.ps1` | BicepのWhat-Ifを実行する |
-| `Invoke-Deploy.ps1` | Bicepデプロイを実行する |
+| `Invoke-Deploy.ps1` | What-If確認後に、明示確認付きでBicepデプロイを実行する |
 | `Test-GovernanceBaseline.ps1` | デプロイ後の基本確認、Policy state、現在ユーザーのRole Assignment確認を実行する |
 | `Invoke-Teardown.ps1` | 検証用Resource Group、Policy Assignment、Policy Definitionを削除する |
 | `Test-TeardownCleanup.ps1` | Teardown後に対象Resource Group、Policy Assignment、Policy Definitionの残存確認を行う |
@@ -35,7 +35,8 @@
 
 .\scripts\cli\Invoke-Deploy.ps1 `
   -Location "japaneast" `
-  -ParameterFile ".\infra\parameters\lowcost-demo.bicepparam"
+  -ParameterFile ".\infra\parameters\lowcost-demo.bicepparam" `
+  -ConfirmDeploy
 
 .\scripts\cli\Test-GovernanceBaseline.ps1 `
   -Environment "sandbox" `
@@ -52,6 +53,10 @@
   -ResourceNamePrefix "apg"
 ```
 
+`Invoke-Deploy.ps1` は `-ConfirmDeploy` を指定しない限り、実デプロイを実行しません。先に `Invoke-WhatIf.ps1` で差分を確認し、想定外の削除や変更がないことを確認した後にのみ `-ConfirmDeploy` を付けて実行します。
+
+PowerShell標準の `-WhatIf` を併用した場合も、`az deployment sub create` は実行されません。
+
 ## 出力とマスク方針
 
 `Set-AzContext.ps1` と `Test-GovernanceBaseline.ps1` は、既定ではSubscription ID、Tenant ID、User、Principal名などをマスクして出力します。
@@ -67,7 +72,8 @@
 
 ## 運用方針
 
-- Deploy前にWhat-Ifを実行する
+- Deploy前に `Invoke-WhatIf.ps1` を実行し、差分を確認する
+- 差分確認後にのみ `Invoke-Deploy.ps1 -ConfirmDeploy` を使用する
 - Deploy後にValidateを実行する
 - Policy stateまで確認する
 - 検証後はTeardownで不要リソースを削除する
