@@ -13,6 +13,8 @@ param allowedLocations = [
 ]
 param logAnalyticsSku = 'PerGB2018'
 param logAnalyticsRetentionInDays = 30
+param logAnalyticsPublicNetworkAccessForIngestion = 'Enabled'
+param logAnalyticsPublicNetworkAccessForQuery = 'Enabled'
 param enablePolicyAssignments = true
 param enableRbacAssignments = false
 param principalId = ''

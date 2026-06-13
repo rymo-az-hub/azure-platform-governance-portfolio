@@ -37,6 +37,7 @@ Diagnostic Settingsの詳細適用、Activity Log export、各リソースのDia
 | Location | OK | `japaneast` |
 | SKU | OK | `PerGB2018` |
 | Retention | OK | 30日 |
+| Public Network Access | OK | PoCでは `Enabled`。閉域要件がある環境ではPrivate Link等を設計したうえで見直す |
 | Tag | OK | 必須Tag付与済み |
 
 ## 5. VNet確認結果
@@ -63,6 +64,7 @@ Diagnostic Settingsの詳細適用、Activity Log export、各リソースのDia
 |---|---|---|
 | Diagnostic Settings詳細実装 | 対象外 | 初期PoCでは実装しない |
 | ログ出力先Workspace作成 | OK | `law-apg-sandbox-monitoring` |
+| Workspace Public Network Access | OK | 初期PoCでは明示パラメータで `Enabled` |
 | 今後の拡張 | 要検討 | Activity Log、主要リソース、ログカテゴリ、コスト影響を整理して追加する |
 
 ## 8. 判断

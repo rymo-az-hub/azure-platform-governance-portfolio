@@ -36,6 +36,8 @@ Log Analytics Workspaceは、共通のログ出力先として作成します。
 rg-apg-<env>-monitoring
 ```
 
+現行PoCでは、個人検証環境での再現性を優先し、WorkspaceのPublic Network Accessをパラメータで明示したうえで `Enabled` とします。閉域化が必要な環境では、Private Link、DNS、運用端末からの到達経路、障害時の確認方法を整理してから `Disabled` を検討します。
+
 ## 4. Diagnostic Settings
 
 Diagnostic Settingsは、Azureリソースのログやメトリックを指定した出力先へ送る設定です。
@@ -116,6 +118,8 @@ infra/modules/monitoring/main.bicep
 - `workspaceName`
 - `location`
 - `retentionInDays`
+- `publicNetworkAccessForIngestion`
+- `publicNetworkAccessForQuery`
 - `commonTags`
 - `diagnosticSettingName`（将来拡張）
 

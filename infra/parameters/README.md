@@ -9,6 +9,16 @@
 | `dev.bicepparam` | 開発・構成確認用のサンプルパラメータ |
 | `lowcost-demo.bicepparam` | 公開Evidence取得時に使用した低コストPoC用パラメータ |
 
+## 主なパラメータ方針
+
+| パラメータ | 方針 |
+|---|---|
+| `logAnalyticsRetentionInDays` | 初期PoCでは最小保持期間の30日を使用 |
+| `logAnalyticsPublicNetworkAccessForIngestion` | 初期PoCでは再現性を優先して `Enabled` |
+| `logAnalyticsPublicNetworkAccessForQuery` | 初期PoCでは再現性を優先して `Enabled` |
+| `enableRbacAssignments` | 公開用パラメータでは `false` |
+| `principalId` | 公開用パラメータでは空文字 |
+
 ## 公開時の注意
 
 以下はパラメータファイルに含めません。

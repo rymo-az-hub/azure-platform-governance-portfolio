@@ -17,7 +17,7 @@ Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cos
 主な確認範囲は以下です。
 
 - Azure Policy、RBAC、Tag、Log、Cost、例外運用、Evidence方針を整理。
-- Bicep、Azure CLI、PowerShellを使い、What-If、Deploy、Validate、Teardownまで確認。
+- Bicep、Azure CLI、PowerShellを使い、What-If、Confirm付きDeploy、Validate、Teardownまで確認。
 - いきなりDenyではなく、Audit firstで統制を始める設計判断を明記。
 - AVD運用標準化をサブテーマとして配置し、CloudOpsの考え方を実運用へ落とし込む例を整理。
 - 実Tenant ID、Subscription ID、Principal ID、UPN、顧客固有値は公開しない方針で証跡を整理。
@@ -40,7 +40,7 @@ Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cos
 | 1 | [README](README.md) | 全体像、PoC完了状態、実装範囲 |
 | 2 | [Governance Design](docs/01_main_azure_governance_baseline/governance_design.md) | 統制方針、責任分界、例外運用 |
 | 3 | [Bicep entry point](infra/main.bicep) | 実装対象とスコープ |
-| 4 | [CLI Runbook](scripts/cli/README.md) | What-If、Deploy、Validate、Teardownの流れ |
+| 4 | [CLI Runbook](scripts/cli/README.md) | What-If、Confirm付きDeploy、Validate、Teardownの流れ |
 | 5 | [Validation Summary](docs/04_evidence/06-validation-summary.md) | 検証結果、Policy state、Teardown、後片付け |
 
 ## 詳細確認の順序
@@ -69,7 +69,7 @@ Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cos
 
 | 区分 | 内容 |
 |---|---|
-| 実装・検証済み | SubscriptionスコープBicep、Resource Group、Log Analytics Workspace、VNet、Custom Policy Definition、Policy Assignment、What-If、Deploy、Validate、Policy state確認、Teardown、Teardown後残存確認、publication-check workflowによる公開前検査 |
+| 実装・検証済み | SubscriptionスコープBicep、Resource Group、Log Analytics Workspace、VNet、Custom Policy Definition、Policy Assignment、What-If、Confirm付きDeploy、Validate、Policy state確認、Teardown、Teardown後残存確認、publication-check workflowによる公開前検査 |
 | 文書化・設計済み | RBAC設計、Tag標準、Cost管理、例外運用、Monitoring方針、Evidence方針、AVD運用標準化 |
 | Validateで確認 | Resource Groupタグ、主要リソースタグ、Log Analytics Workspace、VNet、Policy Assignment、現在サインイン中PoCユーザーのRole Assignment |
 | 将来拡張 | Management Group展開、Policy Initiative、Policy Exemption、Resource GroupタグPolicy強制、Diagnostic Settings詳細適用、Activity Log export、Budget |
@@ -80,7 +80,7 @@ Azureリソースを作るだけではなく、権限、Policy、Tag、Log、Cos
 |---|---|
 | Bicep build | 完了 |
 | What-If | 完了 |
-| Deploy | 完了 |
+| Confirm付きDeploy | 完了 |
 | Validate | 完了 |
 | Policy state確認 | 完了 |
 | Evidence反映 | 完了 |
@@ -96,7 +96,7 @@ PoCでは、Owner常用ではなく、検証用の実行アカウントに必要
 
 | 区分 | 内容 |
 |---|---|
-| PoC実装済み | SubscriptionスコープBicep、Resource Group、Log Analytics Workspace、VNet、Custom Policy Definition、Policy Assignment、What-If、Deploy、Validate、Policy state確認、Teardown |
+| PoC実装済み | SubscriptionスコープBicep、Resource Group、Log Analytics Workspace、VNet、Custom Policy Definition、Policy Assignment、What-If、Confirm付きDeploy、Validate、Policy state確認、Teardown |
 | 設計・文書化済み | RBAC設計、Tag標準、Cost管理方針、例外運用、Monitoring方針、AVD運用標準化、ADR、Evidence方針 |
 | 今後拡張 | Management Group展開、Policy Initiative、Policy Exemption、Diagnostic Settings本格実装、Budget |
 
@@ -184,7 +184,7 @@ Bicep build
   ↓
 What-If
   ↓
-Deploy
+Confirm付きDeploy
   ↓
 Policy / RBAC / Tag / Log の確認
   ↓

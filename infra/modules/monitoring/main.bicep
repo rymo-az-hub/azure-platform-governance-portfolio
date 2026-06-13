@@ -14,6 +14,20 @@ param sku string = 'PerGB2018'
 @maxValue(730)
 param retentionInDays int = 30
 
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Public network access for ingestion.')
+param publicNetworkAccessForIngestion string = 'Enabled'
+
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Public network access for query.')
+param publicNetworkAccessForQuery string = 'Enabled'
+
 @description('Resource tags.')
 param tags object
 
@@ -29,11 +43,10 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
     features: {
       enableLogAccessUsingOnlyResourcePermissions: true
     }
-    publicNetworkAccessForIngestion: 'Enabled'
-    publicNetworkAccessForQuery: 'Enabled'
+    publicNetworkAccessForIngestion: publicNetworkAccessForIngestion
+    publicNetworkAccessForQuery: publicNetworkAccessForQuery
   }
 }
 
 output workspaceName string = workspace.name
 output workspaceId string = workspace.id
-output customerId string = workspace.properties.customerId

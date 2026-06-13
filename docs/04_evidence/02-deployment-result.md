@@ -22,7 +22,8 @@ Azure Governance Baselineのデプロイ結果を記録します。
 ```powershell
 .\scripts\cli\Invoke-Deploy.ps1 `
   -Location "japaneast" `
-  -ParameterFile ".\infra\parameters\lowcost-demo.bicepparam"
+  -ParameterFile ".\infra\parameters\lowcost-demo.bicepparam" `
+  -ConfirmDeploy
 ```
 
 ## 4. 確認結果

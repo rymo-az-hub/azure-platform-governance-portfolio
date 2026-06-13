@@ -4,7 +4,7 @@
 
 この文書では、Azure Governance Baselineを適用した後の確認計画を整理します。
 
-設計書やBicepを作成しても、実際に意図した状態になっているかを確認しなければ、運用に渡せる状態とは言えません。現行PoCでは、What-If、Deploy、Policy、RBAC設計とPoC実行権限、Tag、Monitoring Baseline、Teardownの結果をEvidenceとして残します。
+設計書やBicepを作成しても、実際に意図した状態になっているかを確認しなければ、運用に渡せる状態とは言えません。現行PoCでは、What-If、Confirm付きDeploy、Policy、RBAC設計とPoC実行権限、Tag、Monitoring Baseline、Teardownの結果をEvidenceとして残します。
 
 ## 2. 基本方針
 
@@ -54,13 +54,13 @@ az deployment sub what-if \
 
 ## 5. デプロイ確認
 
-デプロイはAzure CLIで実行します。
+デプロイはAzure CLI Runbookで実行します。`Invoke-Deploy.ps1` は `-ConfirmDeploy` を指定しない限り実デプロイしません。先にWhat-If結果を確認し、想定外の削除や変更がないことを確認した後にのみ `-ConfirmDeploy` を付けます。
 
-```bash
-az deployment sub create \
-  --location japaneast \
-  --template-file infra/main.bicep \
-  --parameters infra/parameters/lowcost-demo.bicepparam
+```powershell
+.\scripts\cli\Invoke-Deploy.ps1 `
+  -Location "japaneast" `
+  -ParameterFile ".\infra\parameters\lowcost-demo.bicepparam" `
+  -ConfirmDeploy
 ```
 
 デプロイ後は、成功したかだけではなく、主要リソースが想定どおり作成されているかを確認します。
@@ -222,4 +222,4 @@ Evidenceには、以下をそのまま残しません。
 
 Validationでは、デプロイできたことだけではなく、設計どおりの状態になっているかを確認します。
 
-What-If、Deploy、Policy、RBAC設計とPoC実行権限、Tag、Monitoring Baseline、Teardownの結果をEvidenceとして残すことで、設計、実装、運用確認をつなげます。
+What-If、Confirm付きDeploy、Policy、RBAC設計とPoC実行権限、Tag、Monitoring Baseline、Teardownの結果をEvidenceとして残すことで、設計、実装、運用確認をつなげます。

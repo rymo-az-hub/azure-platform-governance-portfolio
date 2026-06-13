@@ -45,6 +45,8 @@ Management Groupは初期PoCの必須要素にはしません。複数Subscripti
 
 パラメータファイルには、実Tenant ID、実Subscription ID、実UPN、実Principal ID、顧客名、社内環境名を含めません。
 
+Log Analytics WorkspaceのPublic Network Accessは、初期PoCでは再現性を優先して明示的に `Enabled` とします。本番または閉域要件がある環境では、Private Link、ネットワーク経路、名前解決、運用者の接続方法を設計したうえで `Disabled` を検討します。
+
 ## Build
 
 リポジトリ直下で実行します。
@@ -80,6 +82,7 @@ Evidence記録
 - ローカル実行環境はPowerShell 7を想定する
 - PolicyはAudit中心から始める
 - RBAC AssignmentはPrincipalが指定された場合のみ扱う
+- Log Analytics WorkspaceのPublic Network Accessはパラメータで明示する
 - 検証後に削除できる構成にする
 
 ## レビュー観点

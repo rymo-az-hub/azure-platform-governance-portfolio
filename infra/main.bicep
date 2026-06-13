@@ -35,6 +35,20 @@ param logAnalyticsSku string = 'PerGB2018'
 @maxValue(730)
 param logAnalyticsRetentionInDays int = 30
 
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Public network access for Log Analytics Workspace ingestion. Use Disabled only when private access is designed.')
+param logAnalyticsPublicNetworkAccessForIngestion string = 'Enabled'
+
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Public network access for Log Analytics Workspace query. Use Disabled only when private access is designed.')
+param logAnalyticsPublicNetworkAccessForQuery string = 'Enabled'
+
 @description('Enable policy assignments.')
 param enablePolicyAssignments bool = true
 
@@ -99,6 +113,8 @@ module monitoring 'modules/monitoring/main.bicep' = {
     workspaceName: logAnalyticsWorkspaceName
     sku: logAnalyticsSku
     retentionInDays: logAnalyticsRetentionInDays
+    publicNetworkAccessForIngestion: logAnalyticsPublicNetworkAccessForIngestion
+    publicNetworkAccessForQuery: logAnalyticsPublicNetworkAccessForQuery
     tags: union(commonTags, {
       Workload: 'platform-monitoring'
     })
