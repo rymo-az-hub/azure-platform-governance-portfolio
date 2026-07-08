@@ -42,6 +42,12 @@
 - Bicep / スクリプトの挙動変更
 - GitHub Actions、Secrets、リポジトリ設定の変更
 
+## GitHub Actions方針
+
+- GitHub Actionsを使う場合は、`uses:` をタグではなくfull commit SHAで固定し、バージョンを示すコメントを併記することを基線とします。
+- SHA固定の追随はDependabot（`github-actions` エコシステム）で行う前提を維持します。Dependabotが更新しない場合は、`git ls-remote` で対象タグのcommit SHAを取得して手動更新します。
+- SHA固定はサプライチェーン対策として有効ですが、workflow変更であるため、明示指示なしに行わず、Owner承認対象とします。
+
 ## 変更の進め方
 
 - 変更は小さなPR単位で行い、目的を明確にしてください。
