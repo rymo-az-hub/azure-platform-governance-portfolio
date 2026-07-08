@@ -1,7 +1,7 @@
 # AGENTS.md
 
 このリポジトリでAIエージェントを利用する際の共通指示です。
-本書は Owner-led AI-assisted engineering baseline v1.0 に準拠します。
+本書は Owner-led AI-assisted engineering baseline v1.1 に準拠します。
 
 ## 役割前提
 
